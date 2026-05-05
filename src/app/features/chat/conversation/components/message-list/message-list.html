@@ -253,10 +253,13 @@
             } @else {
               <div class="message__status-icons" [class.message__status-icons--read]="isMessageRead(item.msg)">
                 @if (isMessageRead(item.msg)) {
-                  <svg class="check-read" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                    <polyline points="22 10 11 21 6 16" style="transform: translateX(-4px)"></polyline>
-                  </svg>
+                  <app-lottie-animation
+                    src="/assets/animations/read-receipt.json"
+                    width="18px"
+                    height="18px"
+                    [autoplay]="true"
+                    [loop]="false"
+                  ></app-lottie-animation>
                 } @else {
                   <svg class="check-sent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>

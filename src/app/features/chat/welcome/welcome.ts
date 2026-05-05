@@ -12,6 +12,6 @@ import { LottieAnimationComponent } from '../../../shared/components/lottie-anim
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Welcome {
-  // Animación muy sutil de un chat para la bienvenida (URL directa de CDN alternativo)
-  lottieSrc = 'https://raw.githubusercontent.com/abhisheknaiidu/awesome-lottie/master/chat.json';
+  // Animación local para la bienvenida
+  lottieSrc = '/assets/animations/welcome.json';
 }

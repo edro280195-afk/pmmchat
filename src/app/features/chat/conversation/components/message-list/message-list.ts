@@ -16,6 +16,7 @@ import { RenderContentPipe } from '../../../../../shared/pipes/render-content.pi
 import { AudioPlayerComponent } from '../../../../../shared/components/audio-player/audio-player';
 import { LOTTIE_CHECKMARK, LOTTIE_DOUBLE_CHECKMARK } from '../../../../../shared/animations/lottie-icons';
 import { LinkPreviewComponent } from '../link-preview/link-preview';
+import { LottieAnimationComponent } from '../../../../../shared/components/lottie-animation/lottie-animation';
 import { LongPressDirective } from '../../../../../shared/directives/long-press.directive';
 import { UtcDatePipe } from '../../../../../shared/pipes/utc-date.pipe';
 import { ReactionAnimDirective } from '../../../../../shared/directives/reaction-anim.directive';
@@ -45,7 +46,8 @@ export interface ReactionGroup {
     AsyncPipe, ScrollingModule,
     Avatar, FileSizePipe, SecureMediaPipe, RenderContentPipe,
     AudioPlayerComponent, LinkPreviewComponent, LongPressDirective,
-    UtcDatePipe, ReactionAnimDirective, MessageFlightDirective
+    UtcDatePipe, ReactionAnimDirective, MessageFlightDirective,
+    LottieAnimationComponent
   ],
   templateUrl: './message-list.html',
   styleUrl: './message-list.scss',

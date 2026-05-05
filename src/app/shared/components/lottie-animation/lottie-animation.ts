@@ -1,21 +1,18 @@
-import { Component, input, signal, effect, ElementRef, ViewChild, AfterViewInit, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import lottie, { AnimationItem } from 'lottie-web';
 
 @Component({
   selector: 'app-lottie-animation',
   standalone: true,
   imports: [CommonModule],
-  schemas: [NO_ERRORS_SCHEMA],
   template: `
-    <lottie-player
-      #lottiePlayer
-      [src]="src()"
-      [autoplay]="autoplay()"
-      [loop]="loop()"
-      [background]="background()"
-      [speed]="speed()"
-      style="width: {{ width() }}; height: {{ height() }};"
-    ></lottie-player>
+    <div
+      #lottieContainer
+      [style.width]="width"
+      [style.height]="height"
+      [style.background]="background"
+    ></div>
   `,
   styles: [`
     :host {
@@ -24,42 +21,81 @@ import { CommonModule } from '@angular/common';
       align-items: center;
     }
 
-    lottie-player {
+    div {
       display: block;
+      overflow: hidden;
     }
   `]
 })
-export class LottieAnimationComponent implements AfterViewInit {
-  src = input.required<string>(); // URL to Lottie JSON
-  autoplay = input<boolean>(true);
-  loop = input<boolean>(true);
-  background = input<string>('transparent');
-  speed = input<number>(1);
-  width = input<string>('200px');
-  height = input<string>('200px');
+export class LottieAnimationComponent implements AfterViewInit, OnDestroy, OnChanges {
+  @Input({ required: true }) src!: string;
+  @Input() autoplay = true;
+  @Input() loop = true;
+  @Input() background = 'transparent';
+  @Input() speed = 1;
+  @Input() width = '200px';
+  @Input() height = '200px';
 
-  @ViewChild('lottiePlayer') player!: ElementRef<HTMLElement>;
+  @ViewChild('lottieContainer') container!: ElementRef<HTMLDivElement>;
+  private animationItem: AnimationItem | null = null;
+  private isViewInit = false;
 
-  ngAfterViewInit(): void {
-    // Player is automatically initialized via attributes
+  ngOnChanges(changes: SimpleChanges): void {
+    // Si cambia el src y ya estamos inicializados, recargamos
+    if (this.isViewInit && changes['src']) {
+      this.loadAnimation(this.src);
+    }
+    
+    // Si cambia la velocidad
+    if (this.animationItem && changes['speed']) {
+      this.animationItem.setSpeed(this.speed);
+    }
   }
 
-  // Method to play animation programmatically
-  play(): void {
-    if (this.player?.nativeElement) {
-      (this.player.nativeElement as any).play();
+  ngAfterViewInit(): void {
+    this.isViewInit = true;
+    this.loadAnimation(this.src);
+    if (this.animationItem) {
+      this.animationItem.setSpeed(this.speed);
     }
+  }
+
+  private loadAnimation(path: string) {
+    if (!this.container?.nativeElement || !path) return;
+    
+    if (this.animationItem) {
+      this.animationItem.destroy();
+      this.animationItem = null;
+    }
+
+    this.animationItem = lottie.loadAnimation({
+      container: this.container.nativeElement,
+      renderer: 'svg',
+      loop: this.loop,
+      autoplay: this.autoplay,
+      path: path,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid meet'
+      }
+    });
+  }
+
+  play(): void {
+    this.animationItem?.play();
   }
 
   pause(): void {
-    if (this.player?.nativeElement) {
-      (this.player.nativeElement as any).pause();
-    }
+    this.animationItem?.pause();
   }
 
   stop(): void {
-    if (this.player?.nativeElement) {
-      (this.player.nativeElement as any).stop();
+    this.animationItem?.stop();
+  }
+
+  ngOnDestroy(): void {
+    if (this.animationItem) {
+      this.animationItem.destroy();
+      this.animationItem = null;
     }
   }
 }

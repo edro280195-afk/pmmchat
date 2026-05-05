@@ -27,7 +27,6 @@
   },
   "plugins": {
     "updater": {
-      "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDYyQjczQjEyQzM5NjNCMQpSV1N4WXprc3NYTXJCczRxbW0xQ0NDbzZzYXdXOUNJTEViMDNreE1tcC8yZ01MVE85akptV0tLUQo=",
       "endpoints": [
         "https://github.com/edro280195-afk/pmmchat/releases/latest/download/latest.json"
@@ -37,7 +36,11 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": [
+      "msi",
+      "nsis"
+    ],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

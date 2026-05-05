@@ -98,9 +98,13 @@
     @if (typingUsers().length > 0) {
     <div class="typing-status">
       <div class="typing-status__indicator">
-        <span></span>
-        <span></span>
-        <span></span>
+        <app-lottie-animation
+          src="/assets/animations/typing.json"
+          width="40px"
+          height="24px"
+          [autoplay]="true"
+          [loop]="true"
+        ></app-lottie-animation>
       </div>
       <span>{{ typingUsers().join(', ') }} está escribiendo...</span>
     </div>

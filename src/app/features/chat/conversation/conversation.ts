@@ -17,7 +17,7 @@ import { PresenceStatus } from '../../../core/models/presence.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { format, isToday, isYesterday, isSameDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { SecureMediaPipe } from '../../../shared/pipes/secure-media.pipe';
@@ -29,6 +29,7 @@ import { LinkPreviewService } from '../../../core/services/link-preview.service'
 import { MessageList } from './components/message-list/message-list';
 
 import { LottieComponent } from '../../../shared/components/lottie/lottie';
+import { LottieAnimationComponent } from '../../../shared/components/lottie-animation/lottie-animation';
 import { LOTTIE_CHECKMARK, LOTTIE_DOUBLE_CHECKMARK, LOTTIE_TYPING } from '../../../shared/animations/lottie-icons';
 import gsap from 'gsap';
 
@@ -36,9 +37,11 @@ import gsap from 'gsap';
   selector: 'app-conversation',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule, 
     ConversationHeaderComponent, ConversationSidebarComponent, 
-    MessageInputComponent, MessageList
+    MessageInputComponent, MessageList,
+    LottieAnimationComponent
   ],
   templateUrl: './conversation.html',
   styleUrl: './conversation.scss',

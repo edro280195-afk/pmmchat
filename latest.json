@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "notes": "Versión inicial de PMM Chat con soporte para actualizaciones automáticas.",
+  "pub_date": "2026-05-05T12:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQnZGTWlzcGVkUVpqTHRFdGdwaUM1dGlmNDllY0Y3K2pIU0p3d09SZVNWQUcxMlFYaXEwYm9qS0hOREtXYmtKNXh5dTQ0eFAxU2JQZ00wS2NVVk9ramdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MDAwNzgyCWZpbGU6UE1NIENoYXRfMC4xLjBfeDY0X2VuLVVTLm1zaQpPa2p2TDRrclZCdzh2VjZXMDkyMEZwOFRIMi9ubVptSmJXV2xuWms3eGI0U2JyRVpSVSt3TkVVVS9NemEzUnRNYVFqY1RTVEMzS1ArcVZTQ1MvL2pBUT09Cg==",
+      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.0/PMM.Chat_0.1.0_x64_en-US.msi"
+    }
+  }
+}
