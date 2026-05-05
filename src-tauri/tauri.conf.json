@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "PMM Chat",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "identifier": "com.grupopmm.pmm-chat",
   "build": {
     "frontendDist": "../dist/PMMChat-angular/browser",
@@ -13,6 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
+        "label": "main",
         "title": "PMM Chat",
         "width": 800,
         "height": 600,

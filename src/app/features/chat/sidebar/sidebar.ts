@@ -65,11 +65,21 @@ export class Sidebar implements OnInit, OnDestroy {
   readonly filteredRooms = computed(() => {
     const query = this.searchQuery().toLowerCase();
     const allRooms = this.rooms();
-    if (!query) return allRooms;
-    return allRooms.filter((r) => 
-      this.getRoomDisplayName(r).toLowerCase().includes(query) ||
-      r.lastMessagePreview?.toLowerCase().includes(query)
-    );
+    
+    // 1. Filtrar
+    let result = query 
+      ? allRooms.filter((r) => 
+          this.getRoomDisplayName(r).toLowerCase().includes(query) ||
+          r.lastMessagePreview?.toLowerCase().includes(query)
+        )
+      : [...allRooms];
+
+    // 2. Ordenar por fecha del último mensaje (Descendente)
+    return result.sort((a, b) => {
+      const dateA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+      const dateB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+      return dateB - dateA;
+    });
   });
 
   ngOnInit(): void {

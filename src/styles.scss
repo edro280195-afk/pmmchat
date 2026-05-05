@@ -105,10 +105,15 @@
 
 .theme-coquette {
   --app-bg: #fff5f7;
-  --app-bg-surface: #ffffff;
+  --app-bg-surface: #fffcfd;
+  --app-bg-surface-rgb: 255, 252, 253;
+  --app-fg: #831843;
+  --app-muted-fg: #be185d;
+  --app-border: rgba(236, 72, 153, 0.15);
+  --app-muted: rgba(236, 72, 153, 0.08);
   --app-primary: #ec4899;
   --primary-rgb: 236, 72, 153;
-  /* Cursor personalizado solo en host (sin !important ni * para no romper inputs/botones) */
+  /* Cursor personalizado solo en host */
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%23f472b6" stroke="%23be185d" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>') 10 10, auto;
 }
 
@@ -152,6 +157,7 @@
 .theme-cosmos {
   --app-bg: #020617;
   --app-bg-surface: #0f172a;
+  --app-bg-surface-rgb: 15, 23, 42;
   --app-fg: #e2f8f8;
   --app-muted-fg: #64b8b8;
   --app-border: rgba(45, 212, 191, 0.18);
@@ -163,6 +169,7 @@
 .theme-midnight-gold {
   --app-bg: #11151E;
   --app-bg-surface: #26364c;
+  --app-bg-surface-rgb: 38, 54, 76;
   --app-fg: #f1f5f9;
   --app-muted-fg: #8D949A;
   --app-border: rgba(66, 118, 142, 0.2);

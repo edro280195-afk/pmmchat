@@ -295,6 +295,23 @@
   }
 }
 
+.sidebar__footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--app-border);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(var(--app-bg-surface-rgb), 0.05);
+
+  .version-tag {
+    font-size: 10px;
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 700;
+    color: var(--app-muted-fg);
+    opacity: 0.4;
+    letter-spacing: 0.05em;
+  }
+}
+
 .form-group {
   display: flex;
   flex-direction: column;

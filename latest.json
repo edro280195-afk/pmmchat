@@ -1,11 +1,11 @@
 {
-  "version": "0.1.0",
-  "notes": "Versión inicial de PMM Chat con soporte para actualizaciones automáticas.",
-  "pub_date": "2026-05-05T12:00:00Z",
+  "version": "0.1.4",
+  "notes": "Mejoras en notificaciones (foco nativo), tema Blossom revitalizado, avisos de descarga y correcciones de UI.",
+  "pub_date": "2026-05-05T18:45:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQnZGTWlzcGVkUVpqTHRFdGdwaUM1dGlmNDllY0Y3K2pIU0p3d09SZVNWQUcxMlFYaXEwYm9qS0hOREtXYmtKNXh5dTQ0eFAxU2JQZ00wS2NVVk9ramdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MDAwNzgyCWZpbGU6UE1NIENoYXRfMC4xLjBfeDY0X2VuLVVTLm1zaQpPa2p2TDRrclZCdzh2VjZXMDkyMEZwOFRIMi9ubVptSmJXV2xuWms3eGI0U2JyRVpSVSt3TkVVVS9NemEzUnRNYVFqY1RTVEMzS1ArcVZTQ1MvL2pBUT09Cg==",
-      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.0/PMM.Chat_0.1.0_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQm9Tb0Q1VUhnNDFMNUs0TXdoNFhka0FPZ3BxNG1TallMZjBMZlR3YWxXSHN4TXBuVjI0YXpnNC9veWlDbForUi9WaVFHaU96S2pVTGNnUkE3UTAxc0FJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MDI0NTY1CWZpbGU6UE1NIENoYXRfMC4xLjRfeDY0X2VuLVVTLm1zaQp0Y2xHK21kUTU3a2wzSmRITGlSREprRjMxUW1zb1pYSnlIUlVFWEJZSzFQWWp1YW84ZFZCdlNJSHVpZENjSmtIZElHcGhiVjZJd0k0c3FSQzExQkREdz09Cg==",
+      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.4/PMM.Chat_0.1.4_x64_en-US.msi"
     }
   }
 }

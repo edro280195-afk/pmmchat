@@ -1,4 +1,4 @@
-import {  Component, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener, Inject, PLATFORM_ID , ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener, Inject, PLATFORM_ID , ChangeDetectionStrategy, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Login implements AfterViewInit, OnDestroy {
+export class Login implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('networkCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private themeService = inject(ThemeService);
@@ -45,6 +45,12 @@ export class Login implements AfterViewInit, OnDestroy {
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  ngOnInit() {
+    if (this.isBrowser && this.authService.isAuthenticated()) {
+      this.router.navigate(['/chat']);
+    }
   }
 
   ngAfterViewInit() {

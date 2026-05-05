@@ -951,6 +951,7 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadAttachment(attachmentId: number, fileName?: string): void {
+    this.toastService.show('Descarga', `Iniciando descarga de ${fileName || 'archivo'}...`, 'info');
     this.fileService.downloadFile(attachmentId, fileName);
   }
 

@@ -45,7 +45,8 @@ export class Settings {
         'PMMChat',
         '¡Funciona! Esta es una notificación de prueba.',
         () => { console.log('Test notification clicked'); },
-        'notification'
+        'notification',
+        true
       );
     } catch (e) {
       alert('Error al lanzar la notificación. Revisa los permisos del navegador o la configuración de Tauri.');
