@@ -1,0 +1,22 @@
+@if (confirmService.pending(); as p) {
+  <div class="confirm-backdrop" (click)="confirmService.respond(false)">
+    <div class="confirm-dialog" (click)="$event.stopPropagation()">
+      @if (p.options.title) {
+        <h3 class="confirm-dialog__title">{{ p.options.title }}</h3>
+      }
+      <p class="confirm-dialog__message">{{ p.options.message }}</p>
+      <div class="confirm-dialog__actions">
+        <button class="confirm-dialog__btn confirm-dialog__btn--cancel"
+                (click)="confirmService.respond(false)">
+          {{ p.options.cancelLabel ?? 'Cancelar' }}
+        </button>
+        <button class="confirm-dialog__btn"
+                [class.confirm-dialog__btn--danger]="p.options.danger"
+                [class.confirm-dialog__btn--primary]="!p.options.danger"
+                (click)="confirmService.respond(true)">
+          {{ p.options.confirmLabel ?? 'Aceptar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

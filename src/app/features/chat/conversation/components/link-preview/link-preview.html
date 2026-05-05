@@ -1,0 +1,16 @@
+@if (preview(); as p) {
+  <a class="link-preview" [href]="url" target="_blank" rel="noopener noreferrer">
+    @if (p.imageUrl) {
+      <div class="link-preview__image">
+        <img [src]="p.imageUrl" [alt]="p.title || ''" loading="lazy" />
+      </div>
+    }
+    <div class="link-preview__body">
+      <span class="link-preview__site">{{ p.siteName || getDomain() }}</span>
+      <span class="link-preview__title">{{ p.title }}</span>
+      @if (p.description) {
+        <span class="link-preview__desc">{{ p.description }}</span>
+      }
+    </div>
+  </a>
+}

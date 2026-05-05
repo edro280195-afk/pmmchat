@@ -1,0 +1,92 @@
+<div class="people">
+  <!-- Search -->
+  <div class="people__search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input
+      type="text"
+      placeholder="Buscar personas..."
+      [value]="searchQuery"
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  <!-- User list grouped by office -->
+  <div class="people__list">
+    @if (loading()) {
+      <div class="people__loading">
+        <div class="people__spinner"></div>
+        <span>Cargando usuarios...</span>
+      </div>
+    } @else {
+    @for (warehouse of groupedUsers(); track warehouse.warehouse) {
+      <div class="people__warehouse" #warehouseItem>
+        <button class="people__warehouse-header" (click)="toggleGroup(warehouse.warehouse, warehouseContent)">
+          <svg 
+            class="people__group-chevron"
+            [class.rotated]="warehouse.collapsed"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warehouse-icon">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>{{ warehouse.warehouse }}</span>
+        </button>
+
+        <div #warehouseContent class="people__warehouse-content" [style.height]="warehouse.collapsed ? '0' : 'auto'" [style.opacity]="warehouse.collapsed ? '0' : '1'">
+          @for (dept of warehouse.departments; track dept.department) {
+            <div class="people__dept">
+              <button class="people__dept-header" (click)="toggleGroup(warehouse.warehouse + '|' + dept.department, deptContent)">
+                <svg 
+                  class="people__group-chevron"
+                  [class.rotated]="dept.collapsed"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="dept-icon">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>{{ dept.department }}</span>
+                <span class="people__group-count">{{ dept.users.length }}</span>
+              </button>
+
+              <div #deptContent class="people__dept-users" [style.height]="dept.collapsed ? '0' : 'auto'" [style.opacity]="dept.collapsed ? '0' : '1'">
+                @for (user of dept.users; track user.userId) {
+                  <button class="people__user" (click)="startChat(user.userId)">
+                    <div class="people__user-avatar-wrap">
+                      <app-avatar [name]="user.nombreCompleto" [size]="36" />
+                      <span
+                        class="status-dot"
+                        [class.status-dot--online]="isOnline(user.userId)"
+                        [class.status-dot--offline]="!isOnline(user.userId)"
+                      ></span>
+                    </div>
+                    <div class="people__user-info">
+                      <span class="people__user-name">{{ user.nombreCompleto }}</span>
+                    </div>
+                    <svg class="people__user-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+      @if (groupedUsers().length === 0) {
+        <div class="people__empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <p>No se encontraron usuarios</p>
+        </div>
+      }
+    }
+  </div>
+</div>

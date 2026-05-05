@@ -1,0 +1,49 @@
+<div class="mentions-panel-overlay" (click)="close()">
+  <div class="mentions-panel" (click)="$event.stopPropagation()">
+    <div class="mentions-panel__header">
+      <div class="mentions-panel__title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+        </svg>
+        <span>Menciones no leídas</span>
+      </div>
+      <button class="mentions-panel__close" (click)="close()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="mentions-panel__body">
+      @if (mentions().length === 0) {
+        <div class="mentions-panel__empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+          </svg>
+          <p>Sin menciones pendientes</p>
+        </div>
+      }
+
+      @for (mention of mentions(); track mention.id) {
+        @if (!mention.isRead) {
+          <button
+            class="mention-item"
+            (click)="navigateToMention(mention.chatRoomId)"
+          >
+            <div class="mention-item__at">@</div>
+            <div class="mention-item__body">
+              <div class="mention-item__meta">
+                <span class="mention-item__room">{{ mention.roomName }}</span>
+                <span class="mention-item__time">{{ mention.createdAt | date:'HH:mm' }}</span>
+              </div>
+              <div class="mention-item__sender">{{ mention.senderName }}</div>
+              <div class="mention-item__preview">{{ mention.messageContent }}</div>
+            </div>
+          </button>
+        }
+      }
+    </div>
+  </div>
+</div>

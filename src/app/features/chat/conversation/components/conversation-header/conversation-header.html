@@ -1,0 +1,83 @@
+<div class="conversation__header glass-blur">
+  <button class="conversation__back-btn" (click)="closeChat.emit()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+  </button>
+  <div class="conversation__header-info" [class.hidden]="isSearchingChat()">
+    <div class="conversation__header-title">
+      <span class="conversation__header-name">{{ roomDisplayName() }}</span>
+      @if (currentRoom()?.type === 1) {
+      <app-presence-dot [status]="partnerPresenceStatus()" />
+      }
+    </div>
+    @if (currentRoom()?.type === 2 && roomParticipants().length > 0) {
+    <div class="conversation__participants">
+      <div class="participants-avatars">
+        @for (p of roomParticipants().slice(0, 5); track p.userId) {
+        <div class="participants-avatars__item" [title]="p.nombreCompleto">
+          <app-avatar [name]="p.nombreCompleto" [size]="22" />
+        </div>
+        }
+        @if (roomParticipants().length > 5) {
+        <div class="participants-avatars__more">+{{ roomParticipants().length - 5 }}</div>
+        }
+      </div>
+      <span class="participants-count">{{ roomParticipants().length }} participantes</span>
+    </div>
+    } @else {
+    <span class="conversation__header-type">
+      @if (currentRoom()?.type === 2) {
+      Grupo corporativo
+      } @else {
+      {{ isPartnerOnline() ? 'En línea' : 'Desconectado' }}
+      }
+    </span>
+    }
+  </div>
+
+  @if (isSearchingChat()) {
+  <div class="conversation__search-bar animate-in">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+    <input type="text" placeholder="Buscar en esta conversación..." [ngModel]="chatSearchQuery()"
+      (ngModelChange)="searchQueryChange.emit($event)" autoFocus />
+    <button class="close-search" (click)="toggleSearch.emit()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+  }
+
+  <div class="conversation__header-actions">
+    @if (currentRoom()?.type === 2) {
+    <button class="icon-btn mentions-btn" [class.active]="showMentionsPanel()" [class.has-badge]="mentionCount() > 0"
+      (click)="toggleMentionsPanel.emit()" title="Menciones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
+      </svg>
+      @if (mentionCount() > 0) {
+      <span class="mentions-badge">{{ mentionCount() > 99 ? '99+' : mentionCount() }}</span>
+      }
+    </button>
+    }
+    <button class="icon-btn" (click)="toggleSearch.emit()" [class.active]="isSearchingChat()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+    </button>
+    <button class="icon-btn" (click)="toggleRoomSidebar.emit()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+        <line x1="9" y1="3" x2="9" y2="21" />
+      </svg>
+    </button>
+  </div>
+</div>

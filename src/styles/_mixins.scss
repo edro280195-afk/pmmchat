@@ -1,0 +1,78 @@
+// ── Mixins ──
+// All mixins use CSS custom properties for theme support.
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin drag {
+  -webkit-app-region: drag;
+}
+
+@mixin no-drag {
+  -webkit-app-region: no-drag;
+}
+
+@mixin glass($opacity: 0.75) {
+  background: rgba(28, 31, 46, $opacity);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--app-border);
+}
+
+@mixin btn-primary {
+  @include flex-center;
+  gap: 8px;
+  font-weight: 600;
+  background: var(--app-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  transition: all 200ms ease;
+
+  &:hover:not(:disabled) {
+    background: var(--app-primary-hover);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
+  }
+}
+
+@mixin btn-ghost {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  transition: all 120ms ease;
+
+  &:hover {
+    background: var(--app-muted);
+    color: var(--app-fg);
+  }
+}
+
+@mixin input-base {
+  padding: 0 12px;
+  background: var(--app-muted);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
+  transition: border-color 200ms ease;
+
+  &:focus {
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 3px var(--app-primary-muted);
+  }
+}

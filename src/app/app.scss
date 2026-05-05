@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.app-shell__content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

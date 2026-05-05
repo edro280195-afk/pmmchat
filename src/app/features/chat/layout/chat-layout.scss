@@ -1,0 +1,205 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat-layout {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+
+  &__sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    flex-shrink: 0;
+    border-right: 1px solid var(--app-border);
+    view-transition-name: sidebar;
+  }
+
+  &__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+    background: transparent;
+    view-transition-name: chat-main;
+    overflow: visible; // Permitir que las acciones de mensajes floten fuera
+  }
+
+  &__bg-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+
+    #bg-canvas {
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: block;
+    }
+  }
+
+  /* ── Mobile Layout ── */
+  @media (max-width: 768px) {
+    &__sidebar {
+      width: 100%;
+      border-right: none;
+    }
+
+    &__main {
+      display: none;
+    }
+
+    &.is-chat-active {
+      .chat-layout__sidebar {
+        display: none;
+      }
+      .chat-layout__main {
+        display: flex;
+        width: 100%;
+      }
+    }
+  }
+}
+
+/* ── Banners de estado de conexión ── */
+.connection-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: var(--font-sm, 12px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  animation: banner-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+
+    &.spin {
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  &--reconnecting {
+    background: var(--app-warning, #f59e0b);
+    color: #000;
+  }
+
+  &--disconnected {
+    background: var(--app-danger, #ef4444);
+    color: #fff;
+    animation: banner-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+               banner-pulse 2s ease-in-out infinite 1s;
+  }
+
+  &--reconnected {
+    background: var(--app-success, #10b981);
+    color: #fff;
+    animation: banner-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@keyframes banner-slide-in {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes banner-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.8; }
+}
+
+/* ── Overlay: Sesión desplazada ── */
+.session-displaced {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: pmm-fade-in 0.4s ease;
+
+  &__card {
+    background: var(--app-bg-surface, #1e1e1e);
+    border: 1px solid var(--app-border);
+    border-radius: var(--radius-xl, 24px);
+    padding: 40px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: pmm-scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    svg {
+      width: 64px;
+      height: 64px;
+      color: var(--app-primary);
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--app-fg);
+    }
+
+    p {
+      margin: 0 0 32px;
+      color: var(--app-muted-fg);
+      line-height: 1.6;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    button {
+      padding: 12px 24px;
+      border-radius: var(--radius-md, 12px);
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-size: var(--font-base);
+
+      &.btn-primary {
+        background: var(--app-primary);
+        color: white;
+        border: none;
+        &:hover { transform: translateY(-2px); box-shadow: 0 8px 15px -3px var(--app-primary-shadow); }
+      }
+
+      &.btn-secondary {
+        background: transparent;
+        color: var(--app-fg);
+        border: 1px solid var(--app-border);
+        &:hover { background: var(--app-muted); }
+      }
+    }
+  }
+}
+
+@keyframes pmm-scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}

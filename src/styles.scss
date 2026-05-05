@@ -1,0 +1,521 @@
+/* === PMMChat 2026 ETHER DESIGN SYSTEM (PRO) === */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Space+Grotesk:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Imperial+Script&family=Unkempt:wght@400;700&display=swap');
+
+/* ===== 1. CORE TOKENS ===== */
+:root {
+  /* Default Typography */
+  --font-family: 'Outfit', sans-serif;
+  --font-xs: 11px;
+  --font-sm: 13px;
+  --font-base: 15px;
+  --font-md: 15px;
+  /* alias */
+  --font-lg: 18px;
+  --font-xl: 22px;
+  --font-2xl: 28px;
+
+  /* Layout Variables (Dynamic) */
+  --spacing-base: 16px;
+  --message-gap: 6px;
+  --bubble-padding: 10px 16px;
+  
+  /* Mobile Safe Areas */
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+
+  /* Layout Structure */
+  --sidebar-width: 320px;
+  --titlebar-height: 38px;
+
+  /* Radius */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Glass System */
+  --app-glass-blur: 24px;
+  --app-glass-opacity: 0.12;
+  --glass-bg: var(--app-bg-surface);
+  --glass-blur: blur(24px);
+  /* shorthand — sincronizado con app-glass-blur */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-tactile: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Default Theme (Light/Serenity fallback) */
+  --app-bg: #f5f7fa;
+  --app-bg-surface: #ffffff;
+  --app-bg-surface-rgb: 255, 255, 255;
+  --app-fg: #1e293b;
+  --app-muted-fg: #64748b;
+  --app-border: rgba(0, 0, 0, 0.08);
+  --app-muted: rgba(0, 0, 0, 0.05);
+  --app-primary: #3b82f6;
+  --primary-rgb: 59, 130, 246;
+
+  /* ── Semantic Colors ── */
+  --app-danger: #ef4444;
+  --app-danger-muted: rgba(239, 68, 68, 0.12);
+  --app-success: #10b981;
+  --app-warning: #f59e0b;
+  --app-accent: #60a5fa;
+
+  /* ── Primary Derivations ── */
+  --app-primary-hover: color-mix(in srgb, var(--app-primary) 85%, #000 15%);
+  --app-primary-muted: rgba(var(--primary-rgb), 0.12);
+
+  /* ── Elevations / Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 0 3px var(--app-primary-muted);
+}
+
+/* --- THEME VARIATIONS --- */
+
+/* Light themes — heredan fg/muted/border del :root (están bien) */
+.theme-serenity {
+  --app-bg: #f8fafc;
+  --app-bg-surface: #ffffff;
+  --app-primary: #3b82f6;
+  --primary-rgb: 59, 130, 246;
+}
+
+.theme-pmm {
+  --app-bg: #f5f7fa;
+  --app-bg-surface: #ffffff;
+  --app-primary: #003d8c;
+  --primary-rgb: 0, 61, 140;
+}
+
+.theme-emerald {
+  --app-bg: #f0fdf4;
+  --app-bg-surface: #ffffff;
+  --app-primary: #10b981;
+  --primary-rgb: 16, 185, 129;
+}
+
+.theme-coquette {
+  --app-bg: #fff5f7;
+  --app-bg-surface: #ffffff;
+  --app-primary: #ec4899;
+  --primary-rgb: 236, 72, 153;
+  /* Cursor personalizado solo en host (sin !important ni * para no romper inputs/botones) */
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%23f472b6" stroke="%23be185d" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>') 10 10, auto;
+}
+
+/* Dark themes — deben declarar fg/muted/border para no heredar valores claros del :root */
+.theme-aura {
+  --app-bg: #03050c;
+  --app-bg-surface: #0f172a;
+  --app-bg-surface-rgb: 15, 23, 42;
+  --app-fg: #f1f5f9;
+  --app-muted-fg: #94a3b8;
+  --app-border: rgba(255, 255, 255, 0.1);
+  --app-muted: rgba(255, 255, 255, 0.06);
+  --app-primary: #818cf8;
+  --primary-rgb: 129, 140, 248;
+}
+
+.theme-dark {
+  --app-bg: #02040a;
+  --app-bg-surface: #0a0b14;
+  --app-bg-surface-rgb: 10, 11, 20;
+  --app-fg: #f1f5f9;
+  --app-muted-fg: #8b9baf;
+  --app-border: rgba(255, 255, 255, 0.1);
+  --app-muted: rgba(255, 255, 255, 0.06);
+  --app-primary: #8b5cf6;
+  --primary-rgb: 139, 92, 246;
+}
+
+.theme-amber {
+  --app-bg: #0d0801;
+  --app-bg-surface: #1a1205;
+  --app-bg-surface-rgb: 26, 18, 5;
+  --app-fg: #fef3c7;
+  --app-muted-fg: #c4965a;
+  --app-border: rgba(251, 191, 36, 0.2);
+  --app-muted: rgba(251, 191, 36, 0.08);
+  --app-primary: #fbbf24;
+  --primary-rgb: 251, 191, 36;
+}
+
+.theme-cosmos {
+  --app-bg: #020617;
+  --app-bg-surface: #0f172a;
+  --app-fg: #e2f8f8;
+  --app-muted-fg: #64b8b8;
+  --app-border: rgba(45, 212, 191, 0.18);
+  --app-muted: rgba(45, 212, 191, 0.08);
+  --app-primary: #2dd4bf;
+  --primary-rgb: 45, 212, 191;
+}
+
+.theme-midnight-gold {
+  --app-bg: #11151E;
+  --app-bg-surface: #26364c;
+  --app-fg: #f1f5f9;
+  --app-muted-fg: #8D949A;
+  --app-border: rgba(66, 118, 142, 0.2);
+  --app-muted: rgba(66, 118, 142, 0.08);
+  --app-primary: #CBAF87;
+  --primary-rgb: 203, 175, 135;
+}
+
+/* --- PERSONALIZATION OVERRIDES --- */
+.font-outfit {
+  --font-family: 'Outfit', sans-serif !important;
+}
+
+.font-lora {
+  --font-family: 'Lora', serif !important;
+}
+
+.font-space {
+  --font-family: 'Space Grotesk', sans-serif !important;
+}
+
+.font-imperial {
+  --font-family: 'Imperial Script', cursive !important;
+}
+
+.font-unkempt {
+  --font-family: 'Unkempt', cursive !important;
+}
+
+.size-xsmall {
+  --font-xs: 9px;
+  --font-sm: 11px;
+  --font-base: 12px;
+  --font-lg: 14px;
+  --font-xl: 16px;
+}
+
+.size-small {
+  --font-xs: 10px;
+  --font-sm: 12px;
+  --font-base: 14px;
+  --font-lg: 16px;
+  --font-xl: 18px;
+}
+
+.size-medium {
+  --font-xs: 11px;
+  --font-sm: 13px;
+  --font-base: 15px;
+  --font-lg: 18px;
+  --font-xl: 22px;
+}
+
+.size-large {
+  --font-xs: 12px;
+  --font-sm: 15px;
+  --font-base: 17px;
+  --font-lg: 20px;
+  --font-xl: 26px;
+}
+
+.size-xlarge {
+  --font-xs: 14px;
+  --font-sm: 17px;
+  --font-base: 20px;
+  --font-lg: 24px;
+  --font-xl: 32px;
+}
+
+.density-compact {
+  --spacing-base: 10px;
+  --message-gap: 2px;
+  --bubble-padding: 6px 12px;
+}
+
+.density-normal {
+  --spacing-base: 16px;
+  --message-gap: 6px;
+  --bubble-padding: 10px 16px;
+}
+
+.density-spacious {
+  --spacing-base: 24px;
+  --message-gap: 12px;
+  --bubble-padding: 16px 22px;
+}
+
+/* ===== 2. GLOBAL RESET & BASE STYLES ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  /* CRITICAL: Ensure inheritance */
+}
+
+/* Los inputs NO heredan font-family por defecto en navegadores — se forza aquí */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+html,
+body {
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
+  font-family: var(--font-family);
+  font-size: var(--font-base);
+  overflow: hidden;
+  background: var(--app-bg);
+  color: var(--app-fg);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent; /* No tap flash */
+  touch-action: manipulation; /* Faster taps */
+  transition: background 0.6s ease, color 0.3s ease, font-size 0.2s ease;
+  
+  /* Safe Area Support */
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+}
+
+/* Global SVG Fix (Prevent Giant Icons) */
+svg {
+  width: 24px;
+  height: 24px;
+  /* Default conservative size */
+  display: block;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--app-bg);
+}
+
+.ether-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: var(--transition-tactile);
+}
+
+/* Premium Button Class (Global) */
+.btn-premium {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--app-bg-surface);
+  border: 1px solid var(--app-border);
+  color: var(--app-fg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: var(--transition-tactile);
+  flex-shrink: 0;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    background: var(--app-primary);
+    color: #fff;
+    border-color: var(--app-primary);
+    box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.9);
+  }
+}
+
+/* Living Orbs */
+.ether-bg__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.35;
+  animation: ether-float 25s infinite alternate ease-in-out;
+
+  &--1 {
+    width: 80%;
+    height: 80%;
+    top: -20%;
+    left: -20%;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.5) 0%, transparent 75%);
+  }
+
+  &--2 {
+    width: 100%;
+    height: 100%;
+    bottom: -30%;
+    right: -20%;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.3) 0%, transparent 75%);
+    animation-delay: -7s;
+  }
+
+  &--3 {
+    width: 60%;
+    height: 60%;
+    top: 40%;
+    left: 50%;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.2) 0%, transparent 75%);
+    animation-delay: -12s;
+  }
+}
+
+@keyframes ether-float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(10%, 5%) scale(1.1);
+  }
+
+  100% {
+    transform: translate(-5%, 10%) scale(0.9);
+  }
+}
+
+/* Wallpapers */
+.mesh-1 {
+  background: radial-gradient(at 0% 0%, #4f46e5 0px, transparent 50%), radial-gradient(at 100% 100%, #c084fc 0px, transparent 50%), radial-gradient(at 50% 50%, #818cf8 0px, transparent 50%);
+}
+
+.mesh-2 {
+  background: radial-gradient(at 0% 100%, #0d9488 0px, transparent 50%), radial-gradient(at 100% 0%, #0891b2 0px, transparent 50%), radial-gradient(at 50% 50%, #115e59 0px, transparent 50%);
+}
+
+.mesh-3 {
+  background: radial-gradient(at 0% 0%, #be185d 0px, transparent 50%), radial-gradient(at 100% 100%, #fb7185 0px, transparent 50%), radial-gradient(at 50% 50%, #9d174d 0px, transparent 50%);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--app-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--app-primary);
+}
+
+/* Custom scrollbar class for OverlayScrollbars compatibility */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-border) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--app-border);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--app-primary);
+  }
+}
+
+/* ===== UTILITY ANIMATIONS ===== */
+
+/* Clase genérica para entradas animadas (dropdowns, pickers, modals) */
+.animate-in {
+  animation: animate-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes animate-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- VIEW TRANSITIONS (Premium Route Animations) --- */
+::view-transition-old(root) {
+  animation: 250ms ease-out both fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 300ms ease-in both fade-in;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

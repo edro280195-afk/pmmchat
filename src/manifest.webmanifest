@@ -1,0 +1,22 @@
+{
+  "name": "PMMChat",
+  "short_name": "PMMChat",
+  "theme_color": "#003d8c",
+  "background_color": "#f5f7fa",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "assets/logochatpmm.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logochatpmm.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+// This file is kept for backwards compatibility only.
+// All theming is now driven by CSS custom properties in styles.scss.
+// Components should use var(--app-*) instead of SCSS variables.
+
+// Fallback values (only used in SCSS @mixin calculations)
+$titlebar-height: 38px;
+$sidebar-width: 320px;
+$input-height: 40px;

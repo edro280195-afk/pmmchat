@@ -1,0 +1,49 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "PMM Chat",
+  "version": "0.1.0",
+  "identifier": "com.grupopmm.pmm-chat",
+  "build": {
+    "frontendDist": "../dist/PMMChat-angular/browser",
+    "devUrl": "http://localhost:4200",
+    "beforeDevCommand": "npm run start",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "PMM Chat",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDYyQjczQjEyQzM5NjNCMQpSV1N4WXprc3NYTXJCczRxbW0xQ0NDbzZzYXdXOUNJTEViMDNreE1tcC8yZ01MVE85akptV0tLUQo=",
+      "endpoints": [
+        "https://github.com/edro280195-afk/pmmchat/releases/latest/download/latest.json"
+      ],
+      "dialog": false
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+<div class="welcome">
+  <div class="welcome__content">
+    <div class="welcome__animation">
+      <app-lottie-animation
+        [src]="lottieSrc"
+        width="200px"
+        height="200px"
+        [autoplay]="true"
+        [loop]="true"
+      ></app-lottie-animation>
+    </div>
+    
+    <h1 class="welcome__title">¡Hola! Bienvenido a PMMChat</h1>
+    <p class="welcome__description">
+      Selecciona una conversación del panel de la izquierda para empezar a chatear o inicia una nueva buscando a tus compañeros en la sección de Personas.
+    </p>
+
+    <div class="welcome__features">
+      <div class="feature">
+        <div class="feature__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <span>Mensajería en tiempo real</span>
+      </div>
+      <div class="feature">
+        <div class="feature__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-10.6 8.38 8.38 0 0 1 3.8.9L21 3.5Z"/>
+          </svg>
+        </div>
+        <span>Menciones con @usuario</span>
+      </div>
+      <div class="feature">
+        <div class="feature__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.51a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+          </svg>
+        </div>
+        <span>Envío de archivos y fotos</span>
+      </div>
+    </div>
+  </div>
+</div>

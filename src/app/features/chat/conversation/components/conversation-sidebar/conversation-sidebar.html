@@ -1,0 +1,178 @@
+<div class="room-sidebar animate-slide-left">
+  <div class="room-sidebar__header">
+    <h3>Información</h3>
+    <button class="icon-btn" (click)="toggleRoomSidebar.emit()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="room-sidebar__body">
+
+    <!-- Avatar e info básica -->
+    <div class="room-sidebar__info">
+      <app-avatar [name]="roomDisplayName()" [size]="80" />
+      @if (isRenaming()) {
+        <div class="room-sidebar__rename">
+          <input
+            type="text"
+            [ngModel]="renameInput()"
+            (ngModelChange)="renameInputChange.emit($event)"
+            (keydown.enter)="confirmRename.emit()"
+            (keydown.escape)="cancelRename.emit()"
+            placeholder="Nombre del grupo"
+            autoFocus
+          />
+          <div class="room-sidebar__rename-actions">
+            <button class="btn-cancel" (click)="cancelRename.emit()">Cancelar</button>
+            <button class="btn-save" (click)="confirmRename.emit()">Guardar</button>
+          </div>
+        </div>
+      } @else {
+        <h4>
+          {{ roomDisplayName() }}
+          @if (isRoomAdmin() && currentRoom()?.type === 2) {
+            <button class="icon-btn icon-btn--inline" (click)="startRename.emit()" title="Renombrar grupo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+          }
+        </h4>
+      }
+      <p>{{ currentRoom()?.type === 2 ? 'Grupo corporativo' : 'Chat Directo' }}</p>
+    </div>
+
+    <!-- Lista de participantes -->
+    <div class="room-sidebar__section">
+      <div class="room-sidebar__section-header">
+        <h5>Participantes ({{ roomParticipants().length }})</h5>
+        @if (isRoomAdmin() && currentRoom()?.type === 2) {
+          <button class="icon-btn" (click)="isAddingParticipantChange.emit(!isAddingParticipant())" title="Agregar participante">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+          </button>
+        }
+      </div>
+
+      <!-- Buscador para agregar participante -->
+      @if (isAddingParticipant()) {
+        <div class="room-sidebar__add-participant animate-in">
+          <input
+            type="text"
+            placeholder="Buscar usuario..."
+            [value]="addParticipantQuery()"
+            (input)="onAddParticipantSearch.emit($any($event.target).value)"
+          />
+          @if (addParticipantResults().length > 0) {
+            <div class="room-sidebar__search-results">
+              @for (r of addParticipantResults(); track r.userId) {
+                <button class="room-sidebar__search-item" (click)="addParticipant.emit(r)">
+                  <app-avatar [name]="r.nombreCompleto" [size]="28" />
+                  <div class="item-info">
+                    <span class="name">{{ r.nombreCompleto }}</span>
+                    <span class="role">@{{ r.claveUsuario }}</span>
+                  </div>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <div class="room-sidebar__list">
+        @for (p of roomParticipants(); track p.userId) {
+          <div class="room-sidebar__item">
+            <app-avatar [name]="p.nombreCompleto" [size]="32" />
+            <div class="item-info">
+              <span class="name">{{ p.nombreCompleto }}</span>
+              <span class="role">@{{ p.claveUsuario }}</span>
+            </div>
+            @if (isRoomAdmin() && p.userId !== userId() && currentRoom()?.type === 2) {
+              <button class="icon-btn icon-btn--danger" (click)="removeParticipant.emit(p.userId)" title="Eliminar del grupo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <line x1="22" y1="18" x2="16" y2="18"/>
+                </svg>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    
+    <!-- Archivos compartidos -->
+    <div class="room-sidebar__section shared-files">
+      <div class="room-sidebar__section-header">
+        <h5>Archivos</h5>
+      </div>
+      
+      <div class="shared-files__tabs">
+        <button [class.active]="activeTab() === 'media'" (click)="setTab('media')">Multimedia</button>
+        <button [class.active]="activeTab() === 'docs'" (click)="setTab('docs')">Documentos</button>
+      </div>
+
+      <div class="shared-files__content">
+        @if (activeTab() === 'media') {
+          <div class="shared-files__grid">
+            @for (att of attachments(); track att.id) {
+              <div class="shared-files__thumb" (click)="openLightbox.emit(att.id)">
+                <img [src]="att.id | secureMedia | async" loading="lazy" [alt]="att.fileName" />
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="shared-files__list">
+            @for (att of attachments(); track att.id) {
+              <div class="shared-files__file" (click)="downloadFile(att)">
+                <div class="file-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="file-info">
+                  <span class="file-name" [title]="att.fileName">{{ att.fileName }}</span>
+                  <span class="file-size">{{ att.fileSize | fileSize }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @if (loadingAttachments()) {
+          <div class="shared-files__loading">
+            <div class="spinner"></div>
+          </div>
+        }
+
+        @if (hasMoreAttachments() && !loadingAttachments() && attachments().length > 0) {
+          <button class="btn-load-more" (click)="loadAttachments(currentRoom()!.id)">Cargar más</button>
+        }
+
+        @if (attachments().length === 0 && !loadingAttachments()) {
+          <div class="shared-files__empty">No hay archivos compartidos</div>
+        }
+      </div>
+    </div>
+    
+    <!-- Acciones de chat -->
+    <div class="room-sidebar__section room-sidebar__actions">
+      <button class="btn-delete-room" (click)="deleteChat.emit()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          <line x1="10" y1="11" x2="10" y2="17" />
+          <line x1="14" y1="11" x2="14" y2="17" />
+        </svg>
+        Eliminar chat
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,285 @@
+<!-- Skeleton loader — primera carga -->
+@if (loading() && displayMessages().length === 0) {
+<div class="message-list__skeletons">
+  @for (skel of skeletonWidths(); track $index) {
+  <div class="skeleton-msg" [class.skeleton-msg--own]="$index % 3 === 2">
+    @if ($index % 3 !== 2) { <div class="skeleton-avatar"></div> }
+    <div class="skeleton-bubble" [style.width]="skel"></div>
+  </div>
+  }
+</div>
+}
+
+<!-- Spinner carga de historial -->
+@if (loading() && displayMessages().length > 0) {
+<div class="message-list__loading-more">
+  <div class="message-list__spinner"></div>
+</div>
+}
+
+<!-- Mensajes -->
+@for (item of displayMessages(); track item.msg.id || item.msg.tempId) {
+  @if (item.showSeparator) {
+  <div class="date-separator">
+    <span class="date-separator__label">{{ getDateSeparator(item.msg.sentAt) }}</span>
+  </div>
+  }
+  @if (item.showNewMessages) {
+  <div class="new-messages-separator">
+    <div class="new-messages-separator__line"></div>
+    <span class="new-messages-separator__label">Mensajes nuevos</span>
+    <div class="new-messages-separator__line"></div>
+  </div>
+  }
+
+  <div class="message" [id]="'msg-' + item.msg.id"
+    [class.message--own]="isOwnMessage(item.msg)"
+    [class.message--has-active-menu]="activeMenuId() === item.msg.id"
+    [class.message--sequence]="item.isSequence"
+    [class.message--sending]="item.msg.status === 'sending'"
+    [class.message--failed]="item.msg.status === 'failed'"
+    [appMessageFlight]="item.msg.status"
+    [isOwn]="isOwnMessage(item.msg)"
+    #messageContainer>
+
+    <div class="message__container">
+      @if (!isOwnMessage(item.msg) && !item.isSequence) {
+      <div class="message__avatar">
+        <app-avatar [name]="item.msg.senderName" [size]="36" />
+      </div>
+      }
+
+      <div class="message__content-wrap">
+        <div class="message__bubble-row" [class.message__bubble-row--has-menu]="activeMenuId() === item.msg.id">
+
+          @if (isOwnMessage(item.msg) && !item.msg.isDeleted) {
+          <button class="message__dots-btn" [class.message__dots-btn--active]="activeMenuId() === item.msg.id"
+            (click)="toggleMenu.emit({ id: item.msg.id, event: $event })" title="Más opciones">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+              <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+              <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+            </svg>
+          </button>
+          }
+
+          <div class="message__bubble" #bubbleEl
+            [class.message__bubble--deleted]="item.msg.isDeleted"
+            [class.message__bubble--media]="isMediaOnly(item.msg)"
+            [class.message__bubble--sending]="item.msg.status === 'sending'"
+            [class.message__bubble--failed]="item.msg.status === 'failed'"
+            [class.message__bubble--pinned]="item.msg.isPinned"
+            (mousemove)="onBubbleMouseMove($event, bubbleEl)"
+            (mouseleave)="onBubbleMouseLeave(bubbleEl)"
+            (longPress)="toggleMenu.emit({ id: item.msg.id })">
+
+            @if (item.msg.replyToMessageId) {
+            <div class="message__reply-preview" (click)="scrollToMessage.emit(item.msg.replyToMessageId)">
+              <div class="reply-bar"></div>
+              <div class="reply-content">
+                <span class="reply-author">{{ getRepliedMessage(item.msg.replyToMessageId)?.senderName || 'Mensaje original' }}</span>
+                <span class="reply-text">{{ getRepliedMessage(item.msg.replyToMessageId)?.content || 'Mensaje no disponible' }}</span>
+              </div>
+            </div>
+            }
+
+            @if (item.msg.isDeleted) {
+            <div class="message__content--deleted">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+              </svg>
+              <span>Este mensaje fue eliminado</span>
+            </div>
+            } @else if (editingMessageId() === item.msg.id) {
+            <div class="message__edit-box">
+              <textarea [value]="editContent()" (input)="onEditContentChange($event)"
+                (keydown.enter)="$event.preventDefault(); confirmEdit.emit()"
+                (keydown.escape)="cancelEdit.emit()"></textarea>
+              <div class="message__edit-footer">
+                <span>Esc para cancelar • Enter para guardar</span>
+                <div class="btns">
+                  <button class="btn-cancel" (click)="cancelEdit.emit()">Cancelar</button>
+                  <button class="btn-save" (click)="confirmEdit.emit()">Guardar</button>
+                </div>
+              </div>
+            </div>
+            } @else {
+            <div class="message__text" [innerHTML]="item.msg.content | renderContent"></div>
+
+            @if (getFirstUrl(item.msg); as url) {
+            <app-link-preview [url]="url" />
+            }
+
+            @if (item.msg.attachments && item.msg.attachments.length > 0) {
+            <div class="message__attachments">
+              @for (att of item.msg.attachments; track att.id) {
+                @if (att.mimeType.startsWith('image/')) {
+                <div class="media-preview media-preview--image" (click)="openImage.emit(att.id)">
+                  <img [src]="att.id | secureMedia | async" [alt]="att.fileName" loading="lazy" />
+                </div>
+                } @else if (att.mimeType.startsWith('audio/')) {
+                <div class="media-preview media-preview--audio">
+                  <app-audio-player [attachmentId]="att.id" [mimeType]="att.mimeType" />
+                </div>
+                } @else {
+                <div class="attachment-file" (click)="downloadAttachment.emit({ id: att.id, fileName: att.fileName })">
+                  <div class="attachment-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                      <polyline points="13 2 13 9 20 9" />
+                    </svg>
+                  </div>
+                  <div class="attachment-info">
+                    <span class="attachment-name" [title]="att.fileName">{{ att.fileName }}</span>
+                    <span class="attachment-size">{{ att.fileSize | fileSize }}</span>
+                  </div>
+                  <svg class="attachment-download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </div>
+                }
+              }
+            </div>
+            }
+            }
+
+            @if (item.msg.reactions && item.msg.reactions.length > 0 && !item.msg.isDeleted) {
+            <div class="message__reactions">
+              @for (group of getGroupedReactions(item.msg); track group.emoji) {
+              <button class="reaction-pill" [class.reaction-pill--active]="group.reactedByMe"
+                [title]="group.users"
+                (click)="onReactionPillClick($event, item.msg, group.emoji)">
+                <span class="emoji" [appReactionAnim]="group.emoji">{{ group.emoji }}</span>
+                <span class="count">{{ group.count }}</span>
+              </button>
+              }
+            </div>
+            }
+          </div>
+
+          @if (!isOwnMessage(item.msg) && !item.msg.isDeleted) {
+          <button class="message__dots-btn" [class.message__dots-btn--active]="activeMenuId() === item.msg.id"
+            (click)="toggleMenu.emit({ id: item.msg.id, event: $event })" title="Más opciones">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+              <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+              <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+            </svg>
+          </button>
+          }
+
+          <!-- Acciones rápidas -->
+          <div class="message__quick-actions" [class.message__quick-actions--active]="activeMenuId() === item.msg.id"
+            (click)="$event.stopPropagation()">
+              <div class="reaction-trigger-wrap">
+                <button #reactionTrigger (click)="toggleReactionPicker.emit(item.msg.id)" title="Reaccionar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                    <line x1="9" y1="9" x2="9.01" y2="9" />
+                    <line x1="15" y1="9" x2="15.01" y2="9" />
+                  </svg>
+                </button>
+                @if (showReactionPickerId() === item.msg.id) {
+                <div #reactionPicker class="reaction-picker animate-in">
+                  @for (emoji of quickReactionEmojis(); track emoji) {
+                  <button class="reaction-picker__emoji"
+                    (click)="selectReaction.emit({ message: item.msg, emoji })">{{ emoji }}</button>
+                  }
+                </div>
+                }
+              </div>
+            <button (click)="replyTo.emit(item.msg)" title="Responder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+              </svg>
+            </button>
+
+            @if (!item.msg.isPinned) {
+            <button (click)="pinMessage.emit(item.msg)" title="Anclar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v2a2 2 0 0 0 1 1.73L11 16.3v4.7a1 1 0 0 0 2 0v-4.7l7-4.57A2 2 0 0 0 21 10z" />
+              </svg>
+            </button>
+            } @else {
+            <button (click)="unpinMessage.emit(item.msg)" title="Desanclar" class="btn-pinned">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            }
+
+            @if (isOwnMessage(item.msg)) {
+            <button (click)="startEdit.emit(item.msg)" title="Editar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+            <button (click)="deleteMessage.emit(item.msg)" class="btn-delete" title="Borrar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
+            }
+          </div>
+        </div>
+
+        <div class="message__info" [class.message__info--own]="isOwnMessage(item.msg)">
+          @if (!isOwnMessage(item.msg) && !item.isSequence) {
+          <span class="message__author">{{ item.msg.senderName }}</span>
+          }
+          <span class="message__time">{{ item.msg.sentAt | utcDate:'HH:mm' }}</span>
+          @if (item.msg.editedAt && !item.msg.isDeleted) {
+          <span class="message__edited">editado</span>
+          }
+          @if (isOwnMessage(item.msg)) {
+          <span class="message__status" [class.message__status--failed]="item.msg.status === 'failed'">
+            @if (item.msg.status === 'sending') {
+            <svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+            } @else if (item.msg.status === 'failed') {
+            <button class="retry-btn" (click)="retryMessage.emit(item.msg)" title="Reintentar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </button>
+            } @else {
+              <div class="message__status-icons" [class.message__status-icons--read]="isMessageRead(item.msg)">
+                @if (isMessageRead(item.msg)) {
+                  <svg class="check-read" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                    <polyline points="22 10 11 21 6 16" style="transform: translateX(-4px)"></polyline>
+                  </svg>
+                } @else {
+                  <svg class="check-sent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </div>
+            }
+          </span>
+          }
+        </div>
+
+        @if (isOwnMessage(item.msg) && item.msg.status === 'failed') {
+        <div class="message__failed-footer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>No se pudo enviar</span>
+          <button class="message__retry-link" (click)="retryMessage.emit(item.msg)">Reintentar</button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,277 @@
+<div class="settings-backdrop" (click)="close()"></div>
+<div class="settings animate-slide-right">
+  <div class="settings__header">
+    <h2>Configuración</h2>
+    <button class="settings__close" (click)="close()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="settings__body">
+    <!-- THEMES -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 014 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343"/>
+        </svg>
+        Tema
+      </h3>
+      <div class="settings__theme-grid">
+        @for (theme of themeService.themes; track theme.id) {
+          <button
+            class="settings__theme-card"
+            [class.active]="themeService.currentTheme() === theme.id"
+            (click)="themeService.setTheme(theme.id)"
+          >
+            <div class="settings__theme-preview" [style.background]="theme.previewColors.bg">
+              <div class="settings__theme-dot" [style.background]="theme.previewColors.primary"></div>
+              <div class="settings__theme-dot settings__theme-dot--sm" [style.background]="theme.previewColors.accent"></div>
+            </div>
+            <span>{{ theme.name }}</span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- FONT FAMILY -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+        </svg>
+        Tipografía
+      </h3>
+      <div class="settings__options">
+        @for (font of themeService.fontOptions; track font.id) {
+          <button
+            class="settings__option"
+            [class.active]="themeService.currentFont() === font.id"
+            (click)="themeService.setFont(font.id)"
+          >
+            <span class="settings__option-preview" [style.fontFamily]="font.name">{{ font.preview }}</span>
+            {{ font.name }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- FONT SIZE -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+        </svg>
+        Tamaño de texto
+      </h3>
+      <div class="settings__options">
+        @for (size of themeService.sizeOptions; track size.id) {
+          <button
+            class="settings__option"
+            [class.active]="themeService.currentSize() === size.id"
+            (click)="themeService.setSize(size.id)"
+          >
+            {{ size.name }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- DENSITY -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        Densidad de mensajes
+      </h3>
+      <div class="settings__options">
+        @for (d of themeService.densityOptions; track d.id) {
+          <button
+            class="settings__option"
+            [class.active]="themeService.currentDensity() === d.id"
+            (click)="themeService.setDensity(d.id)"
+          >
+            {{ d.name }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- PERSONALIZATION -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+        </svg>
+        Personalización
+      </h3>
+
+      <div class="settings__personalization">
+
+        <!-- Intensidad Glass -->
+        <div class="settings__field">
+          <div class="settings__field-header">
+            <label>Intensidad del cristal</label>
+            <span>{{ themeService.glassIntensity() }}px</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" max="60" step="1"
+            [value]="themeService.glassIntensity()"
+            (input)="onGlassChange($event)"
+          >
+        </div>
+
+        <!-- Wallpaper Selection -->
+        <div class="settings__field">
+          <label>Fondo de chat</label>
+          <div class="settings__wallpaper-grid">
+            <button 
+              class="settings__wallpaper-item" 
+              [class.active]="themeService.chatWallpaper() === ''"
+              (click)="themeService.setWallpaper('')"
+              style="background: var(--app-bg-surface)"
+            >
+              <span>Ninguno</span>
+            </button>
+            <button 
+              class="settings__wallpaper-item" 
+              [class.active]="themeService.chatWallpaper() === 'mesh-1'"
+              (click)="themeService.setWallpaper('mesh-1')"
+              style="background: linear-gradient(45deg, #0f172a, #1e293b)"
+            >
+              <div class="mesh-preview mesh-1"></div>
+            </button>
+            <button 
+              class="settings__wallpaper-item" 
+              [class.active]="themeService.chatWallpaper() === 'mesh-2'"
+              (click)="themeService.setWallpaper('mesh-2')"
+              style="background: linear-gradient(45deg, #051937, #004d7a)"
+            >
+              <div class="mesh-preview mesh-2"></div>
+            </button>
+            <button 
+              class="settings__wallpaper-item" 
+              [class.active]="themeService.chatWallpaper() === 'mesh-3'"
+              (click)="themeService.setWallpaper('mesh-3')"
+              style="background: linear-gradient(45deg, #2a0a10, #4a1020)"
+            >
+              <div class="mesh-preview mesh-3"></div>
+            </button>
+
+            <!-- Nuevos Mesh -->
+            <button 
+              class="settings__wallpaper-item" 
+              [class.active]="themeService.chatWallpaper() === 'mesh-4'"
+              (click)="themeService.setWallpaper('mesh-4')"
+              style="background: linear-gradient(45deg, #f59e0b, #ef4444)"
+            >
+              <div class="mesh-preview mesh-4"></div>
+            </button>
+            <button 
+              class="settings__wallpaper-item" 
+              [class.active]="themeService.chatWallpaper() === 'mesh-5'"
+              (click)="themeService.setWallpaper('mesh-5')"
+              style="background: linear-gradient(45deg, #1e1b4b, #1e293b)"
+            >
+              <div class="mesh-preview mesh-5"></div>
+            </button>
+
+            <!-- Fondo Personalizado -->
+            <button 
+              class="settings__wallpaper-item settings__wallpaper-item--custom" 
+              [class.active]="themeService.chatWallpaper() === 'custom-wallpaper'"
+              (click)="wpFileInput.click()"
+              [style.backgroundImage]="themeService.customWallpaperUrl() ? 'url(' + themeService.customWallpaperUrl() + ')' : 'none'"
+            >
+              <div class="custom-wp-overlay">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+              </div>
+              <input #wpFileInput type="file" (change)="onWallpaperFileChange($event)" accept="image/*" hidden>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEHAVIOR -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        Comportamiento
+      </h3>
+
+      <button class="settings__toggle" (click)="themeService.toggleEnterToSend()">
+        <span>Enviar con Enter</span>
+        <div class="settings__toggle-switch" [class.on]="themeService.enterToSend()">
+          <div class="settings__toggle-knob"></div>
+        </div>
+      </button>
+
+      <button class="settings__toggle" (click)="themeService.toggleAlwaysShowTime()">
+        <span>Mostrar hora en cada mensaje</span>
+        <div class="settings__toggle-switch" [class.on]="themeService.alwaysShowTime()">
+          <div class="settings__toggle-knob"></div>
+        </div>
+      </button>
+    </section>
+
+    <!-- TOGGLES -->
+    <section class="settings__section">
+      <h3 class="settings__label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        Notificaciones
+      </h3>
+
+      <button class="settings__toggle" (click)="themeService.toggleSound()">
+        <span>Sonido de mensaje</span>
+        <div class="settings__toggle-switch" [class.on]="themeService.soundEnabled()">
+          <div class="settings__toggle-knob"></div>
+        </div>
+      </button>
+
+      <button class="settings__toggle" (click)="themeService.toggleNotifications()">
+        <span>Notificaciones de escritorio</span>
+        <div class="settings__toggle-switch" [class.on]="themeService.notificationsEnabled()">
+          <div class="settings__toggle-knob"></div>
+        </div>
+      </button>
+
+      <div class="settings__field">
+        <label>Sonido de notificación</label>
+        <div class="settings__sound-grid">
+          @for (sound of themeService.soundOptions; track sound.id) {
+            <button 
+              class="settings__sound-btn" 
+              [class.active]="themeService.currentNotificationSound() === sound.file"
+              (click)="themeService.setNotificationSound(sound.file)"
+            >
+              <div class="sound-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+              </div>
+              <span class="sound-name">{{ sound.name }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <button class="settings__btn-test" (click)="testNotification()">
+        Probar notificación
+      </button>
+    </section>
+  </div>
+</div>

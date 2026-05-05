@@ -1,0 +1,117 @@
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  width: 340px;
+  background: var(--app-glass-bg, rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(var(--app-glass-blur, 20px)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--app-glass-blur, 20px)) saturate(180%);
+  border: 1px solid var(--app-border, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  animation: toast-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--app-primary);
+    opacity: 0.8;
+  }
+
+  &:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--app-primary);
+    
+    svg { width: 20px; height: 20px; }
+  }
+
+  &--success {
+    &::before { background: #10b981; }
+    .toast__icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+  }
+
+  &--error {
+    &::before { background: #ef4444; }
+    .toast__icon { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--app-fg);
+    letter-spacing: -0.01em;
+  }
+
+  &__message {
+    font-size: 13px;
+    color: var(--app-muted-fg);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  &__close {
+    background: transparent;
+    border: none;
+    color: var(--app-muted-fg);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--app-fg);
+    }
+    svg { width: 14px; height: 14px; }
+  }
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}

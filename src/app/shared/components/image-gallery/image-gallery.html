@@ -1,0 +1,67 @@
+<div class="gallery" #galleryOverlay (click)="onBackdropClick($event)">
+  <!-- Header / Toolbar -->
+  <div class="gallery__toolbar">
+    @if (lightbox.currentImage(); as img) {
+    <div class="gallery__info">
+      <span class="gallery__filename">{{ img.fileName }}</span>
+      <span class="gallery__counter">{{ lightbox.currentIndex() + 1 }} / {{ lightbox.images().length }}</span>
+    </div>
+    }
+
+    <div class="gallery__actions">
+      <button class="gallery__btn" (click)="download()" title="Descargar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </button>
+      <button class="gallery__btn gallery__btn--close" (click)="close()" title="Cerrar (Esc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="gallery__content" #imageContainer>
+    @if (lightbox.images().length > 1) {
+    <div class="gallery__nav gallery__nav--prev" (click)="prev()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </div>
+    }
+
+    <div class="gallery__image-wrapper">
+      @if (lightbox.currentImage(); as img) {
+      <img [src]="img.id | secureMedia | async" 
+           [alt]="img.fileName"
+           class="gallery__img" />
+      }
+    </div>
+
+    @if (lightbox.images().length > 1) {
+    <div class="gallery__nav gallery__nav--next" (click)="next()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 6 15 12 9 18" />
+      </svg>
+    </div>
+    }
+  </div>
+
+  <!-- Thumbnails -->
+  @if (lightbox.images().length > 1) {
+  <div class="gallery__thumbnails">
+    @for (thumb of lightbox.images(); track thumb.id; let i = $index) {
+    <div class="gallery__thumb" 
+         [class.is-active]="i === lightbox.currentIndex()"
+         (click)="lightbox.setIndex(i)">
+      <img [src]="thumb.id | secureMedia | async" />
+    </div>
+    }
+  </div>
+  }
+</div>
