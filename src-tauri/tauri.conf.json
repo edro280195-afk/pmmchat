@@ -28,7 +28,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDYyQjczQjEyQzM5NjNCMQpSV1N4WXprc3NYTXJCczRxbW0xQ0NDbzZzYXdXOUNJTEViMDNreE1tcC8yZ01MVE85akptV0tLUQo=",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhERUNEQUY4NzMwMjcwOUIKUldTYmNBSnorTnJzamRYTDdUU1lDajRTSU1CQnJzYWJFaTNXekJzbUlITjVldXBsREdHbWIxMU4K",
       "endpoints": [
         "https://github.com/edro280195-afk/pmmchat/releases/latest/download/latest.json"
       ],
