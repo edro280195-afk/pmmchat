@@ -4,6 +4,7 @@ import { Titlebar } from './shared/components/titlebar/titlebar';
 import { ThemeService } from './core/services/theme.service';
 import { UpdateService } from './core/services/update.service';
 import { NotificationService } from './core/services/notification.service';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 @Component({
   selector: 'app-root',

@@ -1,11 +1,11 @@
 {
-  "version": "0.1.4",
-  "notes": "Mejoras en notificaciones (foco nativo), tema Blossom revitalizado, avisos de descarga y correcciones de UI.",
-  "pub_date": "2026-05-05T18:45:00Z",
+  "version": "0.1.7",
+  "notes": "Notificaciones nativas del sistema operativo, icono en bandeja, tooltip, versión 0.1.7",
+  "pub_date": "2026-05-06T14:10:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQm9Tb0Q1VUhnNDFMNUs0TXdoNFhka0FPZ3BxNG1TallMZjBMZlR3YWxXSHN4TXBuVjI0YXpnNC9veWlDbForUi9WaVFHaU96S2pVTGNnUkE3UTAxc0FJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MDI0NTY1CWZpbGU6UE1NIENoYXRfMC4xLjRfeDY0X2VuLVVTLm1zaQp0Y2xHK21kUTU3a2wzSmRITGlSREprRjMxUW1zb1pYSnlIUlVFWEJZSzFQWWp1YW84ZFZCdlNJSHVpZENjSmtIZElHcGhiVjZJd0k0c3FSQzExQkREdz09Cg==",
-      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.4/PMM.Chat_0.1.4_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQm0zS1ptOTVqOTMrcGZPMEVYM29MWjJtU200THV0QnZnR3dqODdFYWRtemVaWVdnbnJ4MnJKZjlLNXFnVnJMYUdTK3lRWTNESXVBNmRUMFF0R2RMbEFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MDk0NjU1CWZpbGU6UE1NIENoYXRfMC4xLjdfeDY0X2VuLVVTLm1zaQp3ZHMyZDlOamxVOU5ieFRUcUdRUEM2dUtKL3hEbktWN1dickpkRStJcG9GNE1WUDQvN2czeW5LNDViaGNCUzlUbTU4K2VadTlsK1pTOU5RY3ZNSTBEQT09Cg==",
+      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.7/PMM%20Chat_0.1.7_x64_en-US.msi"
     }
   }
 }
