@@ -1,11 +1,11 @@
 {
-  "version": "1.1.0",
-  "notes": "Sincronización mayor v1.1.0: Nueva llave de firma, mejoras en notificaciones clic y corrección de etiquetas visuales.",
-  "pub_date": "2026-05-06T23:30:00Z",
+  "version": "1.1.1",
+  "notes": "Prueba de fuego v1.1.1: Verificación de auto-update con nueva llave de firma. ¡Si ves el cohete 🚀, funcionó!",
+  "pub_date": "2026-05-06T23:45:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "PENDIENTE_DE_NUEVO_BUILD",
-      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v1.1.0/PMM.Chat_1.1.0_x64_en-US.msi"
+      "signature": "PENDIENTE_DE_FIRMA_111",
+      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v1.1.1/PMM.Chat_1.1.1_x64_en-US.msi"
     }
   }
 }
