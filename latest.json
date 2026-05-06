@@ -1,11 +1,11 @@
 {
-  "version": "1.0.9",
-  "notes": "Fix: carga de mensajes al abrir, enlaces, notificaciones clic, parpadeo barra de tareas",
-  "pub_date": "2026-05-06T23:14:00Z",
+  "version": "1.1.0",
+  "notes": "Sincronización mayor v1.1.0: Nueva llave de firma, mejoras en notificaciones clic y corrección de etiquetas visuales.",
+  "pub_date": "2026-05-06T23:30:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQm9RS2lJOGFJZE40V3dHbHA1THRGREU3WWF6YUNrYXFHTi9HWVJHRmVqVHNhaUc3QWJkT1JOb2RJSjdjeG9VVlBsQkRtMFlXbGI4UFNaR0U0dlFncUFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MTA5MzM0CWZpbGU6UE1NIENoYXRfMS4wLjlfeDY0X2VuLVVTLm1zaQo5MXd4ZTlrUHBYQnVsdEVCSzJIRkQydnF0b2hieGZ4NTNPSXh2UHlBV0xMMkx4anVRYjlwd28wS2tiUmpraURpZFZuZHdaaTV1a0d5ZExRWWs3MVlDUT09Cg==",
-      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.9/PMM.Chat_1.0.9_x64_en-US.msi"
+      "signature": "PENDIENTE_DE_NUEVO_BUILD",
+      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v1.1.0/PMM.Chat_1.1.0_x64_en-US.msi"
     }
   }
 }
