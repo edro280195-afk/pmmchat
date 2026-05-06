@@ -1,6 +1,6 @@
 {
   "name": "pmmchat-angular",
-  "version": "0.1.8",
+  "version": "1.0.9",
   "description": "PMMChat — Cliente de chat empresarial de escritorio",
   "scripts": {
     "ng": "ng",

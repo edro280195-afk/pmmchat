@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, computed, signal, effect, inject, ChangeDetectionStrategy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, computed, signal, effect, inject, ChangeDetectionStrategy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from '../../../core/services/message.service';
@@ -68,6 +68,7 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
   public themeService = inject(ThemeService);
   private linkPreviewService = inject(LinkPreviewService);
   public lightbox = inject(LightboxService);
+  private cdr = inject(ChangeDetectorRef);
 
   roomId = 0;
   currentRoom = signal<SidebarRoom | null>(null);
@@ -325,6 +326,7 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
             this.messageService.loadMessages(this.roomId),
           ]);
           this.roomParticipants.set(participants);
+          this.cdr.markForCheck();
 
           // Cargar el LastViewedAt del partner para los checks de lectura
           const partner = participants.find(p => String(p.userId) !== String(this.userId()));
@@ -912,6 +914,7 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
     const msgs = this.messages();
     if (msgs.length === 0 || !this.hasMore()) return;
     await this.messageService.loadMessages(this.roomId, msgs[0].sentAt);
+    this.cdr.markForCheck();
   }
 
   onScroll(): void {

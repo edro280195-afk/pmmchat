@@ -1,11 +1,11 @@
 {
-  "version": "0.1.7",
-  "notes": "Notificaciones nativas del sistema operativo, icono en bandeja, tooltip, versión 0.1.7",
-  "pub_date": "2026-05-06T22:39:00Z",
+  "version": "1.0.9",
+  "notes": "Fix: carga de mensajes al abrir, enlaces, notificaciones clic, parpadeo barra de tareas",
+  "pub_date": "2026-05-06T22:59:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQnNEOGpjcU5QVHFNWEtKaVQxalQ0RXRVcmhlSVdKZTJHbTFCTmkreDJ2eFdWdTd1dTlDd1FocC9rZDNFNzhrNU9NVkdDYUs2dDhCcmh1TGdDbWZUS2dFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MTA3MzAyCWZpbGU6UE1NIENoYXRfMC4xLjdfeDY0X2VuLVVTLm1zaQpXdFJOTXJURmRhdS9GTWpwNmxTcURaZStZSGZQR0IyaXNnd0RqZW4zNytvUG5WV2w3aGVrbXoyOGFOUkNiK0JpNUFtOVc4cHVERzA2TEw2RnVrUWREUT09Cg==",
-      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.7/PMM.Chat_0.1.7_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQm9EcjU3OHhGNmNiMlltL3ZNM2NFNmVuanZwdXhONmxsRmlTYTlXdGM2VHd1bHptZlVYNkFpN0dPSnlxQmpodlhhS0dxQUEzQzNxSzdiYmlWenlDSFFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MTA4NDcxCWZpbGU6UE1NIENoYXRfMS4wLjlfeDY0X2VuLVVTLm1zaQoxR2p1SzFjUlBrQ2ZjQ1BKYWNydEVQYml5UjBKZWYxY3pkeGZvR3pRRVo1NEVpNG1XVUgzb3ZmWTRvRWxPaUVjTWoxWnJIeklnSmpwQXUrU2huNmFDQT09Cg==",
+      "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v1.0.9/PMM%20Chat_1.0.9_x64_en-US.msi"
     }
   }
 }
