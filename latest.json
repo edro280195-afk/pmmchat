@@ -4,7 +4,7 @@
   "pub_date": "2026-05-06T23:45:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "PENDIENTE_DE_FIRMA_111",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQnB6SFRhazZyaFBqNCs2akEyZWZvaVZ1bzBBR256cDduUXI5bFlEZDVoVEN4TEFhMWVBS0tXZFJqZHdPVVcwNmZjWlpaWHZUNyttazZYRHJGb04yN0FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MTExMDY4CWZpbGU6UE1NIENoYXRfMS4xLjFfeDY0X2VuLVVTLm1zaQpHd2ovWDNNS09zL2dnU2pxV0Q4WXVBdjIrT0llLzFzU1hnR2lsZXRLalhBaGlmdFVIZG0rMnhoSHlETjNKbVdYNHNPYkRBRGRIUHZvRWZiVExVQUdBUT09Cg==",
       "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v1.1.1/PMM.Chat_1.1.1_x64_en-US.msi"
     }
   }
