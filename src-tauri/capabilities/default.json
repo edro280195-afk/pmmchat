@@ -24,6 +24,7 @@
     "notification:default",
     "core:window:allow-request-user-attention",
     "core:window:allow-show",
-    "core:window:allow-hide"
+    "core:window:allow-hide",
+    "shell:allow-open"
   ]
 }

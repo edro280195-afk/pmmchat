@@ -1,10 +1,10 @@
 {
   "version": "0.1.7",
   "notes": "Notificaciones nativas del sistema operativo, icono en bandeja, tooltip, versión 0.1.7",
-  "pub_date": "2026-05-06T22:17:00Z",
+  "pub_date": "2026-05-06T22:39:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQnA0YzdnZ2ZmYm1UcjhFY2tFTW5ablZ4aUsrOVJmNERTd0dKYUV0TUpoUmhwei83ZzMwbDh6UW5sTk94MXdGS3daWmpVbGRBQ2M0NE4rU2M4MDBteXdzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MTA1ODk0CWZpbGU6UE1NIENoYXRfMC4xLjdfeDY0X2VuLVVTLm1zaQpyaTFmSXZnTWp3SVJFVVpXM1R4UmgzNFpCcks3S0xXa3BqMTk4NGNmaWp0N3VOeGNUVHlzdDdwdHFOT2FCdWR5a0FjNm5SNjFPM1htMlZlSytLSFhCZz09Cg==",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTeFl6a3NzWE1yQnNEOGpjcU5QVHFNWEtKaVQxalQ0RXRVcmhlSVdKZTJHbTFCTmkreDJ2eFdWdTd1dTlDd1FocC9rZDNFNzhrNU9NVkdDYUs2dDhCcmh1TGdDbWZUS2dFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4MTA3MzAyCWZpbGU6UE1NIENoYXRfMC4xLjdfeDY0X2VuLVVTLm1zaQpXdFJOTXJURmRhdS9GTWpwNmxTcURaZStZSGZQR0IyaXNnd0RqZW4zNytvUG5WV2w3aGVrbXoyOGFOUkNiK0JpNUFtOVc4cHVERzA2TEw2RnVrUWREUT09Cg==",
       "url": "https://github.com/edro280195-afk/pmmchat/releases/download/v0.1.7/PMM.Chat_0.1.7_x64_en-US.msi"
     }
   }

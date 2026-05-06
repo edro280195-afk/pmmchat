@@ -36,7 +36,7 @@ export class RenderContentPipe implements PipeTransform {
         suffix = match[0];
         cleanUrl = cleanUrl.slice(0, -suffix.length);
       }
-      return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="chat-link">${cleanUrl}</a>${suffix}`;
+      return `<a href="${cleanUrl}" data-url="${cleanUrl}" onclick="window.openLink(event)" class="chat-link">${cleanUrl}</a>${suffix}`;
     });
 
     // El regex solo captura caracteres de palabra, punto, guión y letras con tilde —

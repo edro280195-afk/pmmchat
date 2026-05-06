@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ToastService } from './toast.service';
 import { SoundService } from './sound.service';
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
+import { isPermissionGranted, requestPermission, sendNotification, onAction, registerActionTypes } from '@tauri-apps/plugin-notification';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -15,6 +15,34 @@ export class NotificationService {
 
   async init(): Promise<void> {
     try {
+      await registerActionTypes([
+        {
+          id: 'open-chat',
+          actions: [
+            {
+              id: 'open',
+              title: 'Abrir chat'
+            }
+          ]
+        }
+      ]);
+
+      await onAction((event: any) => {
+        console.log('[NotificationService] Acción detectada:', event);
+        
+        const win = getCurrentWindow();
+        win.show().then(() => win.setFocus());
+
+        const id = event.notification?.id || event.id;
+        if (id) {
+          const callback = this.callbacks.get(Number(id));
+          if (callback) {
+            callback();
+            this.callbacks.delete(Number(id));
+          }
+        }
+      });
+
       this.tauriPermissionGranted = await isPermissionGranted();
 
       if (!this.tauriPermissionGranted) {
@@ -44,9 +72,9 @@ export class NotificationService {
     this.soundService.play(soundType);
     this.toastService.show(title, body, 'info', onClick);
 
-    const isWindowVisible = await getCurrentWindow().isVisible();
+    const isWindowFocused = await getCurrentWindow().isFocused();
 
-    if (!isWindowVisible) {
+    if (!isWindowFocused) {
       try {
         await invoke('request_window_attention');
       } catch (e) {
@@ -54,12 +82,13 @@ export class NotificationService {
       }
     }
 
-    if (this.tauriPermissionGranted && (!isWindowVisible || forceNative)) {
+    if (this.tauriPermissionGranted && (!isWindowFocused || forceNative)) {
       try {
         await sendNotification({
           id,
           title,
           body,
+          actionTypeId: 'open-chat',
           silent: true
         });
         console.log('[NotificationService] Notificación enviada:', { id, title });

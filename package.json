@@ -1,6 +1,6 @@
 {
   "name": "pmmchat-angular",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "PMMChat — Cliente de chat empresarial de escritorio",
   "scripts": {
     "ng": "ng",
@@ -42,6 +42,7 @@
     "@tauri-apps/plugin-haptics": "^2.3.2",
     "@tauri-apps/plugin-notification": "^2.3.3",
     "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-shell": "^2.3.5",
     "@tauri-apps/plugin-updater": "^2.10.1",
     "@tiptap/core": "^3.22.5",
     "@tiptap/extension-mention": "^3.22.5",
