@@ -63,6 +63,35 @@
 
     <!-- Room list -->
     <div class="sidebar__scrollable">
+      @if (searchQuery().length >= 3) {
+        <!-- Resultados de Mensajes -->
+        @if (searchMessagesResults().length > 0 || isSearchingMessages()) {
+          <div class="sidebar__section-label">Mensajes encontrados</div>
+          @if (isSearchingMessages()) {
+            <div class="sidebar__loading">Buscando mensajes...</div>
+          }
+          @for (msg of searchMessagesResults(); track msg.id) {
+            <button class="message-result" (click)="selectMessageResult(msg)">
+              <div class="message-result__avatar">
+                <app-avatar [name]="msg.senderName" [size]="32" />
+              </div>
+              <div class="message-result__content">
+                <div class="message-result__top">
+                  <span class="message-result__author">{{ msg.senderName }}</span>
+                  <span class="message-result__room"># {{ msg.roomName }}</span>
+                </div>
+                <div class="message-result__text">{{ msg.content }}</div>
+                <div class="message-result__time">{{ msg.sentAt | relativeTime }}</div>
+              </div>
+            </button>
+          }
+        }
+
+        @if (filteredRooms().length > 0) {
+          <div class="sidebar__section-label">Conversaciones</div>
+        }
+      }
+
       @for (room of filteredRooms(); track room.id) {
       <button class="room-item" [class.room-item--active]="activeRoomId() === room.id" (click)="selectRoom(room)">
         <div class="room-item__avatar-wrap">
@@ -175,17 +204,38 @@
           <label>Nombre del Grupo</label>
           <input type="text" [(ngModel)]="groupName" placeholder="Ej: Contabilidad" />
         </div>
+        
+        <!-- Mostrar seleccionados -->
+        @if (selectedUsersObjects().length > 0) {
         <div class="form-group">
-          <label>Seleccionar Miembros ({{ selectedUsersForGroup().length }})</label>
+          <label>Seleccionados ({{ selectedUsersObjects().length }})</label>
+          <div class="selected-users-preview" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+            @for (u of selectedUsersObjects(); track u.userId) {
+            <div class="selected-user-chip" (click)="toggleUserSelection(u.userId)" style="display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: var(--app-primary-alpha); border-radius: 16px; font-size: 12px; cursor: pointer;">
+              <app-avatar [name]="u.nombreCompleto" [size]="20" />
+              <span>{{ u.nombreCompleto.split(' ')[0] }}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+        <div class="form-group">
+          <label>Añadir Miembros</label>
+          <input type="search" placeholder="Buscar por nombre, ciudad o depto..." [ngModel]="searchGroupUsersQuery()" (ngModelChange)="searchGroupUsersQuery.set($event)" style="margin-bottom: 8px;" />
           <div class="user-selection-list">
-            @for (u of allUsers(); track u.userId) {
+            @for (u of filteredUsersForGroup(); track u.userId) {
             @if (u.userId !== user()?.userId) {
             <div class="user-select-item" (click)="toggleUserSelection(u.userId)"
               [class.selected]="selectedUsersForGroup().includes(u.userId)">
               <app-avatar [name]="u.nombreCompleto" [size]="32" />
               <div class="user-info">
                 <span>{{ u.nombreCompleto }}</span>
-                <small>{{ u.oficina }}</small>
+                <small>{{ u.warehouseName || 'Sin Ciudad' }} - {{ u.departmentName || 'Sin Departamento' }}</small>
               </div>
               <div class="checkbox">
                 @if (selectedUsersForGroup().includes(u.userId)) {
@@ -212,6 +262,6 @@
   </div>
   }
   <div class="sidebar__footer">
-    <span class="version-tag">v1.1.1 🚀</span>
+    <span class="version-tag">v1.2.0 🚀</span>
   </div>
 </div>

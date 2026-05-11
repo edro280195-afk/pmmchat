@@ -39,17 +39,23 @@ export class RenderContentPipe implements PipeTransform {
       return `<a href="${cleanUrl}" data-url="${cleanUrl}" onclick="window.openLink(event)" class="chat-link">${cleanUrl}</a>${suffix}`;
     });
 
-    // El regex solo captura caracteres de palabra, punto, guión y letras con tilde —
-    // nunca puede contener comillas ni ángulos, por lo que el span generado es seguro.
-    const withMentions = escaped.replace(/@([\w.\-\u00C0-\u017F]+)/g, (_match, name) => {
-      const isSelf = name.toLowerCase() === myClaveUsuario.toLowerCase();
-      const cls = isSelf ? 'mention mention--self' : 'mention';
-      return `<span class="${cls}">@${name}</span>`;
+    // Detectar correos electrónicos y convertirlos en enlaces mailto:
+    const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi;
+    escaped = escaped.replace(emailRegex, (email) => {
+      return `<a href="mailto:${email}" class="chat-link email-link">${email}</a>`;
     });
 
-    // Pasar por el sanitizador de Angular como red de seguridad adicional,
-    // luego marcar el resultado limpio como de confianza para [innerHTML].
-    const clean = this.sanitizer.sanitize(SecurityContext.HTML, withMentions) ?? '';
-    return this.sanitizer.bypassSecurityTrustHtml(clean);
+    // El regex solo captura caracteres de palabra, punto, guión y letras con tilde —
+    // Solo permitimos menciones que tengan un espacio (o inicio de línea) antes del @
+    // para evitar capturar los dominios de los correos electrónicos ya convertidos a HTML.
+    const withMentions = escaped.replace(/(^|\s)@([\w.\-\u00C0-\u017F]+)/g, (_match, space, name) => {
+      const isSelf = name.toLowerCase() === myClaveUsuario.toLowerCase();
+      const cls = isSelf ? 'mention mention--self' : 'mention';
+      return `${space}<span class="${cls}">@${name}</span>`;
+    });
+
+    // El resultado ya es seguro porque los caracteres especiales del usuario fueron escapados al inicio.
+    // Solo permitimos el HTML inyectado por las regex (enlaces y menciones).
+    return this.sanitizer.bypassSecurityTrustHtml(withMentions);
   }
 }

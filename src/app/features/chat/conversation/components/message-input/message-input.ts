@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, ViewChild, ElementRef, signal, effect, OnInit, AfterViewChecked, NO_ERRORS_SCHEMA, HostListener } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, ViewChild, ElementRef, signal, effect, OnInit, AfterViewChecked, NO_ERRORS_SCHEMA, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Participant } from '../../../../../core/models/room.model';
@@ -6,6 +6,7 @@ import { ChatMessage } from '../../../../../core/models/message.model';
 import { AutoResizeDirective } from '../../../../../shared/directives/auto-resize.directive';
 import { FileSizePipe } from '../../../../../shared/pipes/file-size.pipe';
 import { FloatingUiService } from '../../../../../core/services/floating-ui.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 import gsap from 'gsap';
 
 @Component({
@@ -18,6 +19,7 @@ import gsap from 'gsap';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessageInputComponent implements OnInit, AfterViewChecked {
+  private toastService = inject(ToastService);
   constructor(private floatingUi: FloatingUiService) {
     effect(() => {
       const recording = this.isRecording();
@@ -130,7 +132,23 @@ export class MessageInputComponent implements OnInit, AfterViewChecked {
   }
 
   addFiles(files: File[]): void {
-    this.pendingFiles.update(current => [...current, ...files]);
+    const allowedExtensions = ['jpg', 'jpeg', 'txt', 'pdf', 'zip'];
+    const filtered = files.filter(f => {
+      const ext = f.name.split('.').pop()?.toLowerCase() || '';
+      return allowedExtensions.includes(ext);
+    });
+
+    if (filtered.length < files.length) {
+      this.toastService.show(
+        'Formato no permitido', 
+        'Solo se permiten imágenes JPEG y documentos PDF, TXT o ZIP.', 
+        'warning'
+      );
+    }
+
+    if (filtered.length > 0) {
+      this.pendingFiles.update(current => [...current, ...filtered]);
+    }
   }
 
   removeFile(index: number): void {
@@ -143,8 +161,13 @@ export class MessageInputComponent implements OnInit, AfterViewChecked {
 
   onKeyDownLocal(event: KeyboardEvent): void {
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      this.onSendMessageLocal();
+      if (this.mentionSuggestions().length > 0) {
+        // Dejar que conversation.ts maneje el Enter para la mención
+        this.onKeyDown.emit(event);
+      } else {
+        event.preventDefault();
+        this.onSendMessageLocal();
+      }
     } else {
       this.onKeyDown.emit(event);
     }
@@ -161,42 +184,8 @@ export class MessageInputComponent implements OnInit, AfterViewChecked {
   }
 
   onSendClick(event: MouseEvent): void {
-    const btn = event.currentTarget as HTMLElement;
-    const tl = gsap.timeline();
-    tl.to(btn, {
-      scale: 0.8,
-      rotation: -15,
-      duration: 0.15,
-      ease: 'power2.in'
-    }).to(btn, {
-      scale: 1.2,
-      rotation: 45,
-      x: 20,
-      y: -20,
-      opacity: 0,
-      duration: 0.3,
-      ease: 'power2.out',
-      onComplete: () => {
-        this.onSendMessageLocal();
-        gsap.set(btn, { scale: 1, rotation: 0, x: 0, y: 0, opacity: 1 });
-      }
-    });
-
-    const burst = document.createElement('div');
-    burst.style.cssText = 'position:absolute;width:10px;height:10px;background:var(--app-primary);border-radius:50%;pointer-events:none;';
-    burst.style.left = `${btn.getBoundingClientRect().left + 20}px`;
-    burst.style.top = `${btn.getBoundingClientRect().top + 20}px`;
-    document.body.appendChild(burst);
-
-    gsap.to(burst, {
-      x: 'random(20, 50)',
-      y: 'random(-50, -20)',
-      scale: 3,
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power3.out',
-      onComplete: () => burst.remove()
-    });
+    // Enviar el mensaje inmediatamente
+    this.onSendMessageLocal();
   }
 
   onPasteLocal(event: ClipboardEvent): void {
@@ -204,14 +193,19 @@ export class MessageInputComponent implements OnInit, AfterViewChecked {
     if (!items) return;
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      if (item.type.startsWith('image/')) {
+      // Solo permitir JPEG (image/jpeg)
+      if (item.type === 'image/jpeg' || item.type === 'image/jpg') {
         event.preventDefault();
         const blob = item.getAsFile();
         if (blob) {
-          const ext = item.type.split('/')[1] || 'png';
-          const file = new File([blob], `clipboard_${Date.now()}.${ext}`, { type: item.type });
+          const file = new File([blob], `clipboard_${Date.now()}.jpg`, { type: 'image/jpeg' });
           this.addFiles([file]);
         }
+        return;
+      } else if (item.type.startsWith('image/')) {
+        // Bloquear otras imágenes con aviso
+        event.preventDefault();
+        this.toastService.show('Formato no permitido', 'Solo se permite pegar imágenes JPEG.', 'warning');
         return;
       }
     }

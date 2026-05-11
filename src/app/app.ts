@@ -21,5 +21,10 @@ export class App {
 
   constructor() {
     this.notificationService.init();
+    
+    // Prevenir el menú contextual por defecto para evitar congelamiento de Tauri
+    document.addEventListener('contextmenu', event => {
+      event.preventDefault();
+    });
   }
 }

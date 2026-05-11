@@ -15,6 +15,7 @@ export class NotificationService {
 
   async init(): Promise<void> {
     try {
+      // Intentar registrar acciones (puede fallar en algunas plataformas o versiones si el comando no existe)
       await registerActionTypes([
         {
           id: 'open-chat',
@@ -25,7 +26,7 @@ export class NotificationService {
             }
           ]
         }
-      ]);
+      ]).catch(e => console.warn('[NotificationService] registerActionTypes no soportado:', e));
 
       await onAction((event: any) => {
         console.log('[NotificationService] Acción detectada:', event);
@@ -72,13 +73,20 @@ export class NotificationService {
     this.soundService.play(soundType);
     this.toastService.show(title, body, 'info', onClick);
 
-    const isWindowFocused = await getCurrentWindow().isFocused();
+    const win = getCurrentWindow();
+    const isWindowFocused = await win.isFocused();
 
     if (!isWindowFocused) {
       try {
-        await invoke('request_window_attention');
+        // Tauri 2.0: 1 = Critical (flash until focus), 2 = Informational (flash once)
+        await win.requestUserAttention(1);
       } catch (e) {
-        console.warn('[NotificationService] request_window_attention falló:', e);
+        // Fallback to invoke if API differs or for backward compatibility with custom commands
+        try {
+          await invoke('request_window_attention');
+        } catch (innerE) {
+          console.warn('[NotificationService] No se pudo solicitar atención del usuario:', innerE);
+        }
       }
     }
 

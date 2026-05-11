@@ -34,6 +34,11 @@ import { ToastService } from '../../../core/services/toast.service';
           <button class="toast__close" (click)="$event.stopPropagation(); toastService.remove(toast.id)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
+          @if (toast.progress !== undefined) {
+            <div class="toast__progress-bg" style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; overflow: hidden;">
+              <div class="toast__progress-bar" [style.width.%]="toast.progress" style="height: 100%; background: currentColor; transition: width 0.3s ease;"></div>
+            </div>
+          }
         </div>
       }
     </div>

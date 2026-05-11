@@ -228,6 +228,7 @@
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     animation: drag-overlay-in 0.2s ease both;
+    pointer-events: none;
   }
 
   &__drag-box {

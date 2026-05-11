@@ -11,6 +11,7 @@ export interface SidebarRoom {
   lastMessagePreview?: string | null;
   lastSenderName?: string | null;
   lastSenderId?: string | null;
+  participantNames?: string[];
 }
 
 export interface CreateRoomRequest {

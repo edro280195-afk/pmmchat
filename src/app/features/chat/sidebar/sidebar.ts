@@ -57,6 +57,11 @@ export class Sidebar implements OnInit, OnDestroy {
   readonly rooms = this.chatService.rooms;
   readonly activeRoomId = this.chatService.activeRoomId;
   readonly user = this.authService.user;
+  
+  // Search results
+  searchMessagesResults = signal<MessageSearchResponse[]>([]);
+  isSearchingMessages = signal(false);
+  private searchSubject = new Subject<string>();
 
   private _typingByRoom = signal<Map<number, string[]>>(new Map());
   private _typingTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
@@ -70,7 +75,8 @@ export class Sidebar implements OnInit, OnDestroy {
     let result = query 
       ? allRooms.filter((r) => 
           this.getRoomDisplayName(r).toLowerCase().includes(query) ||
-          r.lastMessagePreview?.toLowerCase().includes(query)
+          r.lastMessagePreview?.toLowerCase().includes(query) ||
+          (r.participantNames && r.participantNames.some(name => name.toLowerCase().includes(query)))
         )
       : [...allRooms];
 
@@ -124,6 +130,26 @@ export class Sidebar implements OnInit, OnDestroy {
         }
       })
     );
+
+    // Global search logic
+    this.subs.push(
+      this.searchSubject.pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap(query => {
+          if (query.trim().length < 3) {
+            return of([]);
+          }
+          this.isSearchingMessages.set(true);
+          return this.messageService.globalSearchMessages$(query).pipe(
+            catchError(() => of([]))
+          );
+        })
+      ).subscribe(results => {
+        this.searchMessagesResults.set(results);
+        this.isSearchingMessages.set(false);
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -167,8 +193,18 @@ export class Sidebar implements OnInit, OnDestroy {
     this.router.navigate(['/chat', room.id]);
   }
 
+  selectMessageResult(result: MessageSearchResponse): void {
+    this.chatService.setActiveRoom(result.chatRoomId);
+    // Use a query parameter to signal jumping to a message
+    this.router.navigate(['/chat', result.chatRoomId], { 
+      queryParams: { jumpTo: result.id } 
+    });
+  }
+
   onSearchInput(event: Event): void {
-    this.searchQuery.set((event.target as HTMLInputElement).value);
+    const val = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(val);
+    this.searchSubject.next(val);
   }
 
   setTab(tab: 'chats' | 'people'): void {
@@ -183,7 +219,24 @@ export class Sidebar implements OnInit, OnDestroy {
   showGroupModal = signal(false);
   groupName = signal('');
   selectedUsersForGroup = signal<string[]>([]);
+  searchGroupUsersQuery = signal('');
   creatingGroup = signal(false);
+
+  readonly filteredUsersForGroup = computed(() => {
+    const query = this.searchGroupUsersQuery().toLowerCase();
+    const all = this.allUsers();
+    if (!query) return all;
+    return all.filter(u => 
+      u.nombreCompleto.toLowerCase().includes(query) ||
+      (u.departmentName || '').toLowerCase().includes(query) ||
+      (u.warehouseName || '').toLowerCase().includes(query)
+    );
+  });
+
+  readonly selectedUsersObjects = computed(() => {
+    const selectedIds = new Set(this.selectedUsersForGroup());
+    return this.allUsers().filter(u => selectedIds.has(u.userId));
+  });
 
   @ViewChild('sidebarContent') sidebarContent!: ElementRef<HTMLElement>;
 
@@ -203,6 +256,7 @@ export class Sidebar implements OnInit, OnDestroy {
   toggleGroupModal(): void {
     this.showGroupModal.update(v => !v);
     this.groupName.set('');
+    this.searchGroupUsersQuery.set('');
     this.selectedUsersForGroup.set([]);
     if (this.showGroupModal() && this.allUsers().length === 0) {
       this.usersService.loadUsers();

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, com
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from '../../../core/services/message.service';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { ChatService } from '../../../core/services/chat.service';
 import { SignalRService } from '../../../core/services/signalr.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -290,7 +291,8 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
 
   private subs: Subscription[] = [];
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.initTauriDragDrop();
     this.subs.push(
       this.route.params.subscribe(async (params) => {
         const routeUserId = params['userId'] || null;
@@ -381,6 +383,19 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
 
         this.scrollToBottom();
       }),
+    );
+
+    // Handle jumpTo from search results
+    this.subs.push(
+      this.route.queryParams.subscribe(q => {
+        const jumpToId = q['jumpTo'];
+        if (jumpToId) {
+          // Wait for messages to be rendered
+          setTimeout(() => {
+            this.scrollToMessage(+jumpToId);
+          }, 800);
+        }
+      })
     );
 
     this.subs.push(
@@ -1049,30 +1064,139 @@ export class Conversation implements OnInit, OnDestroy, AfterViewInit {
     return this.messages().find((m) => m.id === replyId);
   }
 
-  scrollToMessage(messageId: number): void {
-    // We could find the element by ID and scroll to it if we added IDs to the DOM
-    const el = document.getElementById(`msg-${messageId}`);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      el.classList.add('highlight-pulse');
-      setTimeout(() => el.classList.remove('highlight-pulse'), 2000);
+  async scrollToMessage(messageId: number): Promise<void> {
+    let attempts = 0;
+    let found = false;
+
+    const findAndScroll = () => {
+      const el = document.getElementById(`msg-${messageId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('highlight-pulse');
+        setTimeout(() => el.classList.remove('highlight-pulse'), 2000);
+        return true;
+      }
+      return false;
+    };
+
+    if (findAndScroll()) return;
+
+    this.toastService.show('Buscando', 'Buscando mensaje en el historial...', 'info');
+
+    while (!found && this.hasMore() && attempts < 10) {
+      const oldestMsg = this.messages()[0];
+      if (!oldestMsg) break;
+      await this.messageService.loadMessages(this.roomId, oldestMsg.sentAt);
+      
+      // Esperar a que Angular renderice
+      await new Promise(r => setTimeout(r, 100));
+      
+      if (findAndScroll()) {
+        found = true;
+        break;
+      }
+      attempts++;
+    }
+
+    if (!found) {
+      this.toastService.show('Info', 'El mensaje es muy antiguo para cargarlo automáticamente.', 'info');
+    }
+  }
+
+  private async initTauriDragDrop(): Promise<void> {
+    if (!(window as any).__TAURI_INTERNALS__) return;
+
+    try {
+      const appWindow = getCurrentWebviewWindow();
+      
+      appWindow.onDragDropEvent((event) => {
+        if (event.payload.type === 'enter') {
+          this.dragging.set(true);
+        } else if (event.payload.type === 'leave' || event.payload.type === 'drop') {
+          this.dragging.set(false);
+          
+          if (event.payload.type === 'drop' && event.payload.paths.length > 0) {
+            this.handleTauriFiles(event.payload.paths);
+          }
+        }
+      });
+    } catch (e) {
+      console.error('Error al inicializar drag & drop de Tauri:', e);
+    }
+  }
+
+  private async handleTauriFiles(paths: string[]): Promise<void> {
+    try {
+      const { readFile } = await import('@tauri-apps/plugin-fs');
+      const files: File[] = [];
+      
+      for (const path of paths) {
+        const bytes = await readFile(path);
+        const fileName = path.split(/[\\/]/).pop() || 'archivo-adjunto';
+        const ext = fileName.split('.').pop()?.toLowerCase();
+        
+        // Mapeo básico de tipos MIME para formatos permitidos
+        let type = '';
+        switch (ext) {
+          case 'jpg': case 'jpeg': type = 'image/jpeg'; break;
+          case 'pdf': type = 'application/pdf'; break;
+          case 'txt': type = 'text/plain'; break;
+          case 'zip': type = 'application/zip'; break;
+          default: type = 'application/octet-stream';
+        }
+
+        const file = new File([bytes], fileName, { type });
+        files.push(file);
+      }
+      
+      if (files.length > 0) {
+        this.messageInput.addFiles(files);
+      }
+    } catch (e) {
+      console.error('Error al procesar archivos de Tauri:', e);
+      this.toastService.show('Error', 'No se pudieron procesar los archivos arrastrados.', 'error');
     }
   }
 
   // ── Drag & Drop ──
   dragging = signal(false);
+  private dragCounter = 0;
 
+  @HostListener('document:dragenter', ['$event'])
+  @HostListener('document:dragover', ['$event'])
   onDragOver(event: DragEvent): void {
     event.preventDefault();
-    this.dragging.set(true);
+    event.stopPropagation();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy';
+    }
+    
+    if (event.type === 'dragenter') {
+      this.dragCounter++;
+    }
+    
+    if (!this.dragging()) {
+      this.dragging.set(true);
+    }
   }
 
-  onDragLeave(): void {
-    this.dragging.set(false);
+  @HostListener('document:dragleave', ['$event'])
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.dragCounter--;
+    if (this.dragCounter <= 0) {
+      this.dragCounter = 0;
+      this.dragging.set(false);
+    }
   }
 
+  @HostListener('document:drop', ['$event'])
   async onDrop(event: DragEvent): Promise<void> {
     event.preventDefault();
+    event.stopPropagation();
+    this.dragCounter = 0;
     this.dragging.set(false);
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {

@@ -14,6 +14,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ThemeService } from '../../../core/services/theme.service';
 import { PresenceService } from '../../../core/services/presence.service';
 import { MentionService } from '../../../core/services/mention.service';
+import { MessageService } from '../../../core/services/message.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import gsap from 'gsap';
@@ -34,6 +35,7 @@ export class ChatLayout implements OnInit, OnDestroy, AfterViewInit {
   private themeService = inject(ThemeService);
   private presenceService = inject(PresenceService);
   private mentionService = inject(MentionService);
+  private messageService = inject(MessageService);
   private router = inject(Router);
 
   showSettings = signal(false);
@@ -98,11 +100,14 @@ export class ChatLayout implements OnInit, OnDestroy, AfterViewInit {
 
         // Solo notificar mensajes de otros usuarios
         const isOwnMessage = message.senderId === this.authService.user()?.userId;
-        if (!isOwnMessage && this.chatService.activeRoomId() !== roomId) {
-          const room = this.chatService.rooms().find(r => r.id === roomId);
-          this.chatService.updateRoomInSidebar(roomId, {
-            unreadCount: (room?.unreadCount ?? 0) + 1
-          });
+        if (!isOwnMessage) {
+          // Solo incrementar contador si NO estamos en esa sala
+          if (this.chatService.activeRoomId() !== roomId) {
+            const room = this.chatService.rooms().find(r => r.id === roomId);
+            this.chatService.updateRoomInSidebar(roomId, {
+              unreadCount: (room?.unreadCount ?? 0) + 1
+            });
+          }
 
           this.themeService.playNotificationSound();
 
@@ -133,6 +138,62 @@ export class ChatLayout implements OnInit, OnDestroy, AfterViewInit {
         await this.signalRService.joinRoom(room.id);
       }),
     );
+
+    this.subs.push(
+      this.signalRService.userJoined$.subscribe(({ roomId, participant }) => {
+        // Inyectar mensaje de sistema
+        const sysMsg: any = {
+          id: -Math.floor(Math.random() * 100000),
+          roomId: roomId,
+          senderId: 'system',
+          senderName: 'Sistema',
+          content: `${participant.nombreCompleto} se unió al grupo.`,
+          sentAt: new Date().toISOString(),
+          isDeleted: false,
+          isPinned: false
+        };
+        if (this.chatService.activeRoomId() === roomId) {
+          this.messageService.addMessage(sysMsg);
+        }
+        this.chatService.updateRoomInSidebar(roomId, {
+          lastMessagePreview: `${participant.nombreCompleto} se unió al grupo.`,
+          lastMessageAt: sysMsg.sentAt
+        });
+      })
+    );
+
+    this.subs.push(
+      this.signalRService.userLeft$.subscribe(({ roomId, userId }) => {
+        const sysMsg: any = {
+          id: -Math.floor(Math.random() * 100000),
+          roomId: roomId,
+          senderId: 'system',
+          senderName: 'Sistema',
+          content: `Un usuario salió del grupo.`,
+          sentAt: new Date().toISOString(),
+          isDeleted: false,
+          isPinned: false
+        };
+        if (this.chatService.activeRoomId() === roomId) {
+          this.messageService.addMessage(sysMsg);
+        }
+        this.chatService.updateRoomInSidebar(roomId, {
+          lastMessagePreview: `Un usuario salió del grupo.`,
+          lastMessageAt: sysMsg.sentAt
+        });
+      })
+    );
+
+    // Reload messages on reconnect to prevent missing messages
+    effect(() => {
+      if (this.signalRService.justReconnected()) {
+        this.chatService.loadRooms();
+        const activeRoom = this.chatService.activeRoomId();
+        if (activeRoom) {
+          this.messageService.loadMessages(activeRoom);
+        }
+      }
+    });
   }
 
   ngAfterViewInit(): void {

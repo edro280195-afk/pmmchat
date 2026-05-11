@@ -262,16 +262,6 @@ export class SignalRService {
     this.hubConnection.on('ReceiveMessage', (data: { roomId: number; message: ChatMessage }) => {
       this.ngZone.run(() => {
         this.messageReceived$.next(data);
-        
-        // Show native notification if app is in background or not from current user
-        if (data.message.senderId !== this.authService.user()?.userId && !document.hasFocus()) {
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(`Nuevo mensaje de ${data.message.senderName}`, {
-              body: data.message.content || 'Adjuntó un archivo',
-              icon: '/favicon.ico'
-            });
-          }
-        }
       });
     });
 

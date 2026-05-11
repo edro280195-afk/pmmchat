@@ -78,9 +78,9 @@
 
     <div class="compose-box__toolbar">
       <!-- Hidden file inputs -->
-      <input type="file" #fileInput multiple hidden (change)="onFilesSelectedLocal($event)" accept=".pdf,.xls,.xlsx,.csv,.txt,.docx,.zip" />
-      <input type="file" #imageInput multiple hidden accept="image/*" (change)="onFilesSelectedLocal($event)" />
-      <input type="file" #cameraInput hidden accept="image/*" capture="environment" (change)="onFilesSelectedLocal($event)" />
+      <input type="file" #fileInput multiple hidden (change)="onFilesSelectedLocal($event)" accept=".pdf,.txt,.zip" />
+      <input type="file" #imageInput multiple hidden accept=".jpg,.jpeg" (change)="onFilesSelectedLocal($event)" />
+      <input type="file" #cameraInput hidden accept=".jpg,.jpeg" capture="environment" (change)="onFilesSelectedLocal($event)" />
 
       <button class="tool-btn" title="Adjuntar documento" (click)="triggerFileInput(); $event.stopPropagation()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

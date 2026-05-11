@@ -35,7 +35,7 @@ export class UsersService {
   private readonly _users = signal<CompanyUser[]>([]);
   private readonly _searchQuery = signal('');
   private readonly _loading = signal(false);
-  private readonly _collapsedGroups = signal<Set<string>>(new Set());
+  private readonly _expandedGroups = signal<Set<string>>(new Set());
 
   readonly users = this._users.asReadonly();
   readonly loading = this._loading.asReadonly();
@@ -71,19 +71,19 @@ export class UsersService {
       deptMap.get(department)!.push(user);
     }
 
-    return Array.from(warehouseMap.entries())
-      .map(([warehouse, deptMap]) => ({
-        warehouse,
-        collapsed: this._collapsedGroups().has(warehouse),
-        departments: Array.from(deptMap.entries())
-          .map(([department, users]) => ({
-            department,
-            users,
-            collapsed: this._collapsedGroups().has(`${warehouse}|${department}`)
-          }))
-          .sort((a, b) => a.department.localeCompare(b.department))
-      }))
-      .sort((a, b) => a.warehouse.localeCompare(b.warehouse));
+      return Array.from(warehouseMap.entries())
+        .map(([warehouse, deptMap]) => ({
+          warehouse,
+          collapsed: !this._expandedGroups().has(warehouse),
+          departments: Array.from(deptMap.entries())
+            .map(([department, users]) => ({
+              department,
+              users,
+              collapsed: !this._expandedGroups().has(`${warehouse}|${department}`)
+            }))
+            .sort((a, b) => a.department.localeCompare(b.department))
+        }))
+        .sort((a, b) => a.warehouse.localeCompare(b.warehouse));
   });
 
   setSearchQuery(q: string): void {
@@ -91,18 +91,18 @@ export class UsersService {
   }
 
   toggleGroup(groupId: string): void {
-    const current = this._collapsedGroups();
+    const current = this._expandedGroups();
     const newSet = new Set(current);
     if (newSet.has(groupId)) {
       newSet.delete(groupId);
     } else {
       newSet.add(groupId);
     }
-    this._collapsedGroups.set(newSet);
+    this._expandedGroups.set(newSet);
   }
 
   isGroupCollapsed(groupId: string): boolean {
-    return this._collapsedGroups().has(groupId);
+    return !this._expandedGroups().has(groupId);
   }
 
   async loadUsers(force: boolean = false): Promise<void> {

@@ -27,11 +27,23 @@ export class MessageService {
       );
 
       if (!before) {
-        // Initial load — reverse to show oldest first
-        this._messages.set([...messages].reverse());
+        // Initial load — merge with any messages received via SignalR in the meantime
+        const newMsgs = [...messages].reverse();
+        this._messages.update(current => {
+          const existingIds = new Set(current.map(m => m.id));
+          const filteredNew = newMsgs.filter(m => !existingIds.has(m.id));
+          return [...current, ...filteredNew].sort((a, b) => 
+            new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+          );
+        });
       } else {
         // Pagination — prepend older messages
-        this._messages.update((current) => [...[...messages].reverse(), ...current]);
+        const olderMsgs = [...messages].reverse();
+        this._messages.update((current) => {
+          const existingIds = new Set(current.map(m => m.id));
+          const filteredOlder = olderMsgs.filter(m => !existingIds.has(m.id));
+          return [...filteredOlder, ...current];
+        });
       }
 
       this._hasMore.set(messages.length === 50);

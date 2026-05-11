@@ -3,6 +3,7 @@ import { CommonModule, AsyncPipe } from '@angular/common';
 import { LightboxService } from '../../../core/services/lightbox.service';
 import { SecureMediaPipe } from '../../pipes/secure-media.pipe';
 import { FileService } from '../../../core/services/file.service';
+import { ToastService } from '../../../core/services/toast.service';
 import gsap from 'gsap';
 
 @Component({
@@ -15,6 +16,7 @@ import gsap from 'gsap';
 export class ImageGalleryComponent implements AfterViewInit {
   public lightbox = inject(LightboxService);
   private fileService = inject(FileService);
+  private toastService = inject(ToastService);
 
   @ViewChild('galleryOverlay') overlay!: ElementRef<HTMLDivElement>;
   @ViewChild('imageContainer') imageContainer!: ElementRef<HTMLDivElement>;
